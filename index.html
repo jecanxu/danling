@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f4ef">
+<title>紞灵律术 · 五行灵宝速配</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#fff; --ink:#2a2825; --muted:#7d766c;
+  --line:#ebe6dc; --line2:#f3efe6;
+  --gold:#9c7a3c; --gold-l:#f6efdf;
+  --wx-mu:#3f8f5a; --wx-huo:#c8452f; --wx-tu:#c08a1e; --wx-jin:#94803c; --wx-shui:#2f6f9f;
+  --ok:#3f8f5a; --bad:#c8452f; --warn:#b5791a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:15px/1.7 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC",sans-serif;
+  padding:0 0 env(safe-area-inset-bottom);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 40px}
+header{padding:26px 4px 18px;text-align:center}
+header h1{
+  margin:0;font-size:25px;letter-spacing:6px;font-weight:600;
+  color:#3a3226;
+}
+header h1 .deco{color:var(--gold);letter-spacing:0}
+header p{margin:8px 0 0;font-size:12.5px;color:var(--muted);letter-spacing:2px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:16px;margin-bottom:14px;
+  box-shadow:0 1px 2px rgba(60,50,30,.03),0 6px 18px -12px rgba(60,50,30,.14);
+}
+.card h2{
+  margin:0 0 14px;font-size:15px;font-weight:600;color:#4a4133;
+  display:flex;align-items:center;gap:8px;letter-spacing:1px;
+}
+.card h2::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--gold);display:inline-block}
+.card h3{margin:16px 0 8px;font-size:13.5px;font-weight:600;color:#5a5040}
+.card h3:first-child{margin-top:0}
+.row{display:flex;gap:10px}
+.row>.field{flex:1;min-width:0}
+.field{margin-bottom:11px}
+label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px;letter-spacing:.5px}
+input,select{
+  width:100%;height:42px;padding:0 11px;font-size:15px;color:var(--ink);
+  background:#fdfcf9;border:1px solid var(--line);border-radius:9px;
+  font-family:inherit;outline:none;appearance:none;
+}
+select{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a09a8e'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+input:focus,select:focus{border-color:var(--gold);background:#fff}
+.seg{display:flex;gap:8px}
+.seg button{
+  flex:1;height:42px;border:1px solid var(--line);background:#fdfcf9;border-radius:9px;
+  font-size:14.5px;color:var(--muted);font-family:inherit;cursor:pointer;
+}
+.seg button.on{background:var(--gold-l);border-color:#d9c393;color:#6d5526;font-weight:600}
+/* 出生日期三下拉：年 / 月 / 日。手机上比原生 date 控件好选（原生年份轮要一路回滚几十年） */
+.dseg{display:flex;gap:6px}
+.dseg select{flex:1 1 0;min-width:0;padding:0 6px}
+.dseg #byear{flex:1.35 1 0}
+.go{
+  width:100%;height:47px;border:none;border-radius:11px;cursor:pointer;
+  background:linear-gradient(180deg,#5c4d33,#453a26);color:#f5ecd8;
+  font-size:15.5px;letter-spacing:4px;font-family:inherit;font-weight:600;
+}
+.go:active{transform:translateY(1px)}
+.go[disabled]{opacity:.5;cursor:default}
+.hint{font-size:11.5px;color:#a39b8c;line-height:1.6;margin-top:10px}
+#status{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px;min-height:18px}
+#status.err{color:var(--bad)}
+
+/* 结果区 */
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.pillar{background:#fbf9f4;border:1px solid var(--line2);border-radius:11px;padding:10px 4px;text-align:center}
+.pillar .lbl{font-size:11px;color:#a89f8f;letter-spacing:1px}
+.pillar .gz{font-size:20px;font-weight:600;letter-spacing:1px;margin:5px 0 3px;line-height:1.25}
+.pillar .gz .g{color:#3f3a30}
+.pillar .ss{font-size:11px;color:var(--muted);line-height:1.5}
+.pillar .hide{font-size:10.5px;color:#a89f8f;margin-top:3px}
+.pillar.day{background:var(--gold-l);border-color:#e4d4ad}
+.pillar.day .gz .g{color:#6d5522}
+
+.kv{display:flex;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line2)}
+.kv:last-child{border-bottom:none}
+.kv .k{flex:none;width:74px;color:var(--muted);font-size:12.5px}
+.kv .v{flex:1;min-width:0;color:#3f3a30}
+
+.tag{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:20px;font-size:12px;margin:1px 3px 1px 0;white-space:nowrap;border:1px solid transparent}
+.tag i{width:6px;height:6px;border-radius:50%;display:inline-block;flex:none}
+.t-木{background:#eef6ef;color:var(--wx-mu);border-color:#d6e9db}.t-木 i{background:var(--wx-mu)}
+.t-火{background:#fdefec;color:var(--wx-huo);border-color:#f6d8d2}.t-火 i{background:var(--wx-huo)}
+.t-土{background:#fbf5e4;color:var(--wx-tu);border-color:#efe0b8}.t-土 i{background:var(--wx-tu)}
+.t-金{background:#f7f4e9;color:var(--wx-jin);border-color:#e8e0c4}.t-金 i{background:var(--wx-jin)}
+.t-水{background:#edf3f9;color:var(--wx-shui);border-color:#d5e3f0}.t-水 i{background:var(--wx-shui)}
+.t-none{background:#f4f2ee;color:#8c8577;border-color:#e8e3d8}
+
+.bar{height:7px;border-radius:5px;background:#f0ece2;overflow:hidden;margin:3px 0 7px}
+.bar>span{display:block;height:100%;border-radius:5px}
+
+.verdict{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.vbox{border:1px solid var(--line);border-radius:11px;padding:10px 11px;background:#fcfbf8}
+.vbox .vt{font-size:11.5px;color:var(--muted);letter-spacing:1px;margin-bottom:4px}
+.vbox .vv{font-size:19px;font-weight:600;letter-spacing:2px}
+.vbox.main{background:linear-gradient(180deg,#fdf9ee,#faf5e7);border-color:#e6d5ac}
+.vbox.main .vv{font-size:22px;color:#6d5522}
+.vbox.sub{grid-column:span 1}
+
+.rec{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fdfcfa}
+.rec.best{border-color:#e2cf9f;background:linear-gradient(180deg,#fefbf2,#fdfaf1)}
+.rec .rh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.rec .rt{font-size:13.5px;font-weight:600;color:#5a5040;letter-spacing:1px}
+.rec .cnt{font-size:11.5px;color:#a89f8f}
+.mat{border-top:1px dashed var(--line2);padding:9px 0;font-size:13px}
+.mat:first-of-type{border-top:none;padding-top:2px}
+.mat .mn{font-weight:600;color:#3f3a30;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mat .md{color:var(--muted);font-size:12.5px;line-height:1.75;margin-top:3px}
+.mat .md b{color:#5a5040;font-weight:500}
+.badge{font-size:11px;padding:1px 7px;border-radius:5px;background:#f2efe6;color:#8a7c5c;border:1px solid #e6dfcd}
+.warnline{font-size:12px;color:var(--warn);background:#fdf8ec;border:1px solid #f0e2bf;border-radius:8px;padding:6px 9px;margin-top:6px;line-height:1.65}
+.dangerline{font-size:12px;color:var(--bad);background:#fdf2f0;border:1px solid #f2d9d4;border-radius:8px;padding:6px 9px;margin-top:6px;line-height:1.65}
+.empty{font-size:13px;color:#a89f8f;padding:6px 0}
+ul.plain{margin:6px 0 0;padding-left:18px;font-size:13px;color:#4a4438;line-height:1.85}
+ul.plain li::marker{color:#c3b899}
+.note{font-size:12.5px;color:var(--muted);line-height:1.8}
+.dy{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:12px;text-align:center}
+.dy div{background:#fbf9f4;border:1px solid var(--line2);border-radius:8px;padding:5px 2px}
+.dy div .a{color:#a89f8f;font-size:10.5px}
+footer{padding:22px 6px 10px;text-align:center;font-size:11.5px;color:#a89f8f;line-height:1.9}
+.hidden{display:none!important}
+@media(max-width:360px){
+  .pillar .gz{font-size:17px}
+  header h1{font-size:21px;letter-spacing:4px}
+  .verdict{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>紞灵律术<span class="deco">·</span>五行灵宝速配</h1>
+  <p>四柱排盘 · 五套诊断 · 综合裁决 · 配饰推荐</p>
+</header>
+
+<section class="card">
+  <h2>出生信息</h2>
+
+  <div class="field">
+    <label>性别</label>
+    <div class="seg" id="sexSeg">
+      <button type="button" data-v="1" class="on">男</button>
+      <button type="button" data-v="0">女</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>公历出生日期</label>
+      <div class="dseg">
+        <select id="byear" aria-label="出生年"></select>
+        <select id="bmonth" aria-label="出生月"></select>
+        <select id="bday" aria-label="出生日"></select>
+      </div>
+      <!-- 规范值仍由 #bdate 承载（YYYY-MM-DD），上层逻辑与测试都读它 -->
+      <input type="hidden" id="bdate" value="1990-05-03">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field"><label>出生时间（北京时间 时:分）</label><input type="time" id="btime" value="14:30"></div>
+  </div>
+
+  <div class="field" id="sectField" style="display:none">
+    <label>23:00 后的「晚子时」如何定日柱</label>
+    <div class="seg" id="sectSeg">
+      <button type="button" data-v="2" class="on">日柱算当天</button>
+      <button type="button" data-v="1">日柱算次日</button>
+    </div>
+    <div class="hint" style="margin-top:-2px">
+      只有 23:00–23:59 出生才会用到。「日柱算当天」即夜子时派，为多数排盘软件默认；「日柱算次日」即子正换日派。
+      两派日柱可能相差一整柱，可对比参考。
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field"><label>省 / 直辖市</label><select id="prov"></select></div>
+    <div class="field"><label>市 / 州 / 地区</label><select id="city"></select></div>
+  </div>
+
+  <div class="row">
+    <div class="field"><label>经度（东经，可手动覆盖）</label><input type="number" id="lon" step="0.01" value="116.41"></div>
+  </div>
+  <div class="hint" style="margin-top:-2px">
+    表内取市／州驻地经度（直辖市与香港、澳门特别行政区已列到区／县）。经度每差 1°，真太阳时约差 4 分钟；
+    若出生地在辖区边缘，可搜索当地经度后直接改这里覆盖。
+  </div>
+
+  <button class="go" id="go" disabled>开始查询</button>
+  <div id="status">正在加载排盘库…</div>
+  <div class="hint">
+    排盘口径：年柱以立春为界、月柱以节气为界（节气是绝对天文时刻，按<b>北京时间</b>比对，不因经度改判）；
+    日柱、时柱按<b>真太阳时</b>定，日柱 0:00 换日（23:00–23:59 为晚子时，可选日柱算当天／算次日）。
+    真太阳时 = 北京时间 + (当地经度 − 120°) × 4 分钟 + 均时差，均时差恒启用（范围约 −14.2 ~ +16.4 分钟）。
+  </div>
+</section>
+
+<div id="results"></div>
+
+<footer>
+  本工具为传统民俗文化参考，不构成医疗、投资、健康建议。
+</footer>
+</div>
+
+<script>
+/* ================================================================
+   紞灵律术 · 五行灵宝速配 · 单文件版
+   排盘内核：lunar-javascript（CDN）
+   ================================================================ */
+/* ============ 0. 排盘库动态加载（多 CDN 兜底） ============ */
+/* 版本锁定 1.7.4：与 index.html（参照排盘）同版本，避免上游改动使排盘结果漂移 */
+var LIB_URLS = [
+  'https://registry.npmmirror.com/lunar-javascript/1.7.4/files/lunar.js',
+  'https://cdn.bootcdn.net/ajax/libs/lunar-javascript/1.7.4/lunar.js',
+  'https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.4/lunar.js',
+  'https://unpkg.com/lunar-javascript@1.7.4/lunar.js',
+  'https://cdn.staticfile.net/lunar-javascript/1.7.4/lunar.js',
+  'https://fastly.jsdelivr.net/npm/lunar-javascript@1.7.4/lunar.js'
+];
+function loadCore(){
+  return new Promise(function(resolve, reject){
+    var i = 0;
+    (function next(){
+      if (typeof Solar !== 'undefined' && Solar.fromYmdHms) return resolve();
+      if (i >= LIB_URLS.length) return reject(new Error('排盘库加载失败'));
+      var s = document.createElement('script');
+      s.src = LIB_URLS[i++];
+      s.onload = function(){ (typeof Solar !== 'undefined' && Solar.fromYmdHms) ? resolve() : next(); };
+      s.onerror = next;
+      document.head.appendChild(s);
+    })();
+  });
+}
+
+/* ============ 1. 出生地经度表（省 → 市：经度） ============ */
+var REGIONS = {
+'北京市':[['东城区',116.42],['西城区',116.37],['朝阳区',116.49],['海淀区',116.30],['丰台区',116.29],['石景山区',116.22],['门头沟区',116.10],['房山区',116.14],['通州区',116.66],['顺义区',116.65],['昌平区',116.23],['大兴区',116.34],['怀柔区',116.64],['平谷区',117.11],['密云区',116.84],['延庆区',115.98]],
+'天津市':[['和平区',117.21],['河东区',117.25],['河西区',117.22],['南开区',117.15],['河北区',117.20],['红桥区',117.16],['东丽区',117.31],['西青区',117.01],['津南区',117.39],['北辰区',117.13],['武清区',117.05],['宝坻区',117.31],['滨海新区',117.65],['宁河区',117.83],['静海区',116.92],['蓟州区',117.40]],
+'上海市':[['黄浦区',121.48],['徐汇区',121.44],['长宁区',121.42],['静安区',121.45],['普陀区',121.40],['虹口区',121.50],['杨浦区',121.52],['闵行区',121.38],['宝山区',121.49],['嘉定区',121.26],['浦东新区',121.54],['金山区',121.34],['松江区',121.23],['青浦区',121.12],['奉贤区',121.47],['崇明区',121.40]],
+'重庆市':[['渝中区',106.57],['江北区',106.57],['南岸区',106.57],['沙坪坝区',106.46],['九龙坡区',106.51],['大渡口区',106.48],['渝北区',106.63],['巴南区',106.54],['北碚区',106.44],['万州区',108.41],['涪陵区',107.39],['黔江区',108.77],['永川区',105.93],['合川区',106.27],['江津区',106.26],['长寿区',107.08],['南川区',107.10],['綦江区',106.65],['大足区',105.72],['璧山区',106.23],['铜梁区',106.05],['潼南区',105.84],['荣昌区',105.59],['开州区',108.39],['梁平区',107.80],['武隆区',107.76],['城口县',108.66],['丰都县',107.73],['垫江县',107.35],['忠县',108.04],['云阳县',108.70],['奉节县',109.46],['巫山县',109.88],['巫溪县',109.63],['石柱县',108.11],['秀山县',108.99],['酉阳县',108.77],['彭水县',108.17]],
+'河北省':[['石家庄市',114.51],['唐山市',118.18],['秦皇岛市',119.60],['邯郸市',114.54],['邢台市',114.51],['保定市',115.46],['张家口市',114.88],['承德市',117.96],['沧州市',116.84],['廊坊市',116.70],['衡水市',115.67]],
+'山西省':[['太原市',112.55],['大同市',113.30],['阳泉市',113.58],['长治市',113.11],['晋城市',112.85],['朔州市',112.43],['晋中市',112.75],['运城市',111.00],['忻州市',112.73],['临汾市',111.51],['吕梁市',111.13]],
+'内蒙古自治区':[['呼和浩特市',111.75],['包头市',109.84],['乌海市',106.79],['赤峰市',118.96],['通辽市',122.24],['鄂尔多斯市',109.78],['呼伦贝尔市',119.76],['巴彦淖尔市',107.39],['乌兰察布市',113.13],['兴安盟',122.07],['锡林郭勒盟',116.09],['阿拉善盟',105.70]],
+'辽宁省':[['沈阳市',123.43],['大连市',121.61],['鞍山市',122.99],['抚顺市',123.96],['本溪市',123.77],['丹东市',124.35],['锦州市',121.13],['营口市',122.22],['阜新市',121.67],['辽阳市',123.24],['盘锦市',122.07],['铁岭市',123.84],['朝阳市',120.45],['葫芦岛市',120.83]],
+'吉林省':[['长春市',125.32],['吉林市',126.55],['四平市',124.35],['辽源市',125.14],['通化市',125.94],['白山市',126.42],['松原市',124.82],['白城市',122.84],['延边州',129.51]],
+'黑龙江省':[['哈尔滨市',126.64],['齐齐哈尔市',123.92],['鸡西市',130.97],['鹤岗市',130.28],['双鸭山市',131.16],['大庆市',125.03],['伊春市',128.90],['佳木斯市',130.32],['七台河市',131.00],['牡丹江市',129.63],['黑河市',127.53],['绥化市',126.99],['大兴安岭地区',124.11]],
+'江苏省':[['南京市',118.80],['无锡市',120.30],['徐州市',117.28],['常州市',119.97],['苏州市',120.59],['南通市',120.89],['连云港市',119.22],['淮安市',119.02],['盐城市',120.16],['扬州市',119.41],['镇江市',119.43],['泰州市',119.92],['宿迁市',118.28]],
+'浙江省':[['杭州市',120.15],['宁波市',121.55],['温州市',120.70],['嘉兴市',120.76],['湖州市',120.09],['绍兴市',120.58],['金华市',119.65],['衢州市',118.87],['舟山市',122.21],['台州市',121.42],['丽水市',119.92]],
+'安徽省':[['合肥市',117.28],['芜湖市',118.43],['蚌埠市',117.39],['淮南市',117.00],['马鞍山市',118.51],['淮北市',116.80],['铜陵市',117.81],['安庆市',117.05],['黄山市',118.34],['滁州市',118.32],['阜阳市',115.82],['宿州市',116.98],['六安市',116.52],['亳州市',115.78],['池州市',117.49],['宣城市',118.76]],
+'福建省':[['福州市',119.30],['厦门市',118.09],['莆田市',119.01],['三明市',117.64],['泉州市',118.68],['漳州市',117.65],['南平市',118.18],['龙岩市',117.02],['宁德市',119.53]],
+'江西省':[['南昌市',115.89],['景德镇市',117.18],['萍乡市',113.85],['九江市',115.99],['新余市',114.92],['鹰潭市',117.07],['赣州市',114.94],['吉安市',114.99],['宜春市',114.42],['抚州市',116.36],['上饶市',117.97]],
+'山东省':[['济南市',117.00],['青岛市',120.38],['淄博市',118.05],['枣庄市',117.32],['东营市',118.50],['烟台市',121.39],['潍坊市',119.11],['济宁市',116.59],['泰安市',117.09],['威海市',122.12],['日照市',119.53],['临沂市',118.36],['德州市',116.36],['聊城市',115.98],['滨州市',118.02],['菏泽市',115.48]],
+'河南省':[['郑州市',113.62],['开封市',114.31],['洛阳市',112.45],['平顶山市',113.19],['安阳市',114.35],['鹤壁市',114.29],['新乡市',113.88],['焦作市',113.24],['濮阳市',115.03],['许昌市',113.85],['漯河市',114.03],['三门峡市',111.19],['南阳市',112.53],['商丘市',115.65],['信阳市',114.09],['周口市',114.70],['驻马店市',114.02],['济源市',112.59]],
+'湖北省':[['武汉市',114.30],['黄石市',115.04],['十堰市',110.79],['宜昌市',111.29],['襄阳市',112.14],['鄂州市',114.89],['荆门市',112.20],['孝感市',113.93],['荆州市',112.24],['黄冈市',114.87],['咸宁市',114.32],['随州市',113.37],['恩施州',109.49],['仙桃市',113.45],['潜江市',112.90],['天门市',113.17],['神农架林区',110.68]],
+'湖南省':[['长沙市',112.94],['株洲市',113.15],['湘潭市',112.94],['衡阳市',112.61],['邵阳市',111.47],['岳阳市',113.13],['常德市',111.70],['张家界市',110.48],['益阳市',112.36],['郴州市',113.03],['永州市',111.61],['怀化市',110.00],['娄底市',112.00],['湘西州',109.74]],
+'广东省':[['广州市',113.26],['韶关市',113.60],['深圳市',114.06],['珠海市',113.58],['汕头市',116.68],['佛山市',113.12],['江门市',113.09],['湛江市',110.36],['茂名市',110.93],['肇庆市',112.47],['惠州市',114.42],['梅州市',116.12],['汕尾市',115.38],['河源市',114.70],['阳江市',111.98],['清远市',113.05],['东莞市',113.75],['中山市',113.39],['潮州市',116.62],['揭阳市',116.36],['云浮市',112.04]],
+'广西壮族自治区':[['南宁市',108.37],['柳州市',109.42],['桂林市',110.29],['梧州市',111.30],['北海市',109.12],['防城港市',108.35],['钦州市',108.62],['贵港市',109.60],['玉林市',110.15],['百色市',106.62],['贺州市',111.55],['河池市',108.06],['来宾市',109.23],['崇左市',107.36]],
+'海南省':[['海口市',110.20],['三亚市',109.51],['三沙市',112.34],['儋州市',109.58],['五指山市',109.52],['琼海市',110.47],['文昌市',110.80],['万宁市',110.39],['东方市',108.65],['定安县',110.32],['屯昌县',110.10],['澄迈县',110.01],['临高县',109.69],['白沙县',109.45],['昌江县',109.06],['乐东县',109.17],['陵水县',110.04],['保亭县',109.70],['琼中县',109.84]],
+'四川省':[['成都市',104.07],['自贡市',104.78],['攀枝花市',101.72],['泸州市',105.44],['德阳市',104.40],['绵阳市',104.68],['广元市',105.84],['遂宁市',105.59],['内江市',105.06],['乐山市',103.77],['南充市',106.11],['眉山市',103.85],['宜宾市',104.64],['广安市',106.63],['达州市',107.47],['雅安市',103.00],['巴中市',106.75],['资阳市',104.63],['阿坝州',102.22],['甘孜州',101.96],['凉山州',102.27]],
+'贵州省':[['贵阳市',106.63],['六盘水市',104.83],['遵义市',106.93],['安顺市',105.93],['毕节市',105.29],['铜仁市',109.19],['黔西南州',104.90],['黔东南州',107.98],['黔南州',107.52]],
+'云南省':[['昆明市',102.83],['曲靖市',103.80],['玉溪市',102.54],['保山市',99.17],['昭通市',103.72],['丽江市',100.23],['普洱市',100.97],['临沧市',100.09],['楚雄州',101.55],['红河州',103.38],['文山州',104.24],['西双版纳州',100.80],['大理州',100.23],['德宏州',98.58],['怒江州',98.86],['迪庆州',99.71]],
+'西藏自治区':[['拉萨市',91.11],['日喀则市',88.88],['昌都市',97.17],['林芝市',94.36],['山南市',91.77],['那曲市',92.06],['阿里地区',80.11]],
+'陕西省':[['西安市',108.94],['铜川市',108.95],['宝鸡市',107.14],['咸阳市',108.71],['渭南市',109.51],['延安市',109.49],['汉中市',107.02],['榆林市',109.73],['安康市',109.03],['商洛市',109.94]],
+'甘肃省':[['兰州市',103.83],['嘉峪关市',98.29],['金昌市',102.19],['白银市',104.14],['天水市',105.72],['武威市',102.64],['张掖市',100.45],['平凉市',106.67],['酒泉市',98.49],['庆阳市',107.64],['定西市',104.63],['陇南市',104.93],['临夏州',103.21],['甘南州',102.91]],
+'青海省':[['西宁市',101.78],['海东市',102.10],['海北州',100.90],['黄南州',102.02],['海南州',100.62],['果洛州',100.24],['玉树州',97.01],['海西州',97.37]],
+'宁夏回族自治区':[['银川市',106.23],['石嘴山市',106.38],['吴忠市',106.20],['固原市',106.24],['中卫市',105.20]],
+'新疆维吾尔自治区':[['乌鲁木齐市',87.62],['克拉玛依市',84.89],['吐鲁番市',89.19],['哈密市',93.51],['昌吉州',87.31],['博尔塔拉州',82.07],['巴音郭楞州',86.15],['阿克苏地区',80.26],['克孜勒苏州',76.17],['喀什地区',75.99],['和田地区',79.93],['伊犁州',81.32],['塔城地区',82.98],['阿勒泰地区',88.14],['石河子市',86.04],['阿拉尔市',81.28],['图木舒克市',79.07],['五家渠市',87.54],['北屯市',88.02],['铁门关市',85.67],['双河市',82.35],['可克达拉市',80.63],['昆玉市',79.29],['胡杨河市',84.83]],
+'台湾省':[['台北市',121.52],['新北市',121.46],['桃园市',121.30],['台中市',120.68],['台南市',120.21],['高雄市',120.31],['基隆市',121.74],['新竹市',120.97],['嘉义市',120.45],['宜兰县',121.75],['花莲县',121.60],['台东县',121.14],['屏东县',120.49],['云林县',120.54],['南投县',120.68],['彰化县',120.54],['苗栗县',120.82],['澎湖县',119.57]],
+'香港特别行政区':[['中西区',114.15],['湾仔区',114.17],['东区',114.22],['南区',114.16],['油尖旺区',114.17],['深水埗区',114.16],['九龙城区',114.19],['黄大仙区',114.20],['观塘区',114.22],['葵青区',114.14],['荃湾区',114.11],['屯门区',113.98],['元朗区',114.03],['北区',114.14],['大埔区',114.17],['沙田区',114.19],['西贡区',114.27],['离岛区',113.95]],
+'澳门特别行政区':[['花地玛堂区',113.54],['圣安多尼堂区',113.55],['大堂区',113.55],['望德堂区',113.55],['风顺堂区',113.54],['嘉模堂区',113.56],['圣方济各堂区',113.56],['路氹填海区',113.57]]
+};
+
+/* ============ 2. 基础常量 ============ */
+var GAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+var ZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+var WX5 = ['木','火','土','金','水'];
+var GAN_WX = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+var ZHI_WX = {'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
+var GAN_YANG = {'甲':1,'丙':1,'戊':1,'庚':1,'壬':1};
+var SHENG = {'木':'火','火':'土','土':'金','金':'水','水':'木'};
+var KE    = {'木':'土','土':'水','水':'火','火':'金','金':'木'};
+var SHENG_BY = {'火':'木','土':'火','金':'土','水':'金','木':'水'};
+var KE_BY    = {'土':'木','水':'土','火':'水','金':'火','木':'金'};
+
+/* 藏干权重：单藏 1.0；双藏 0.7/0.3；三藏 0.6/0.25/0.15 */
+var HIDE = {
+  '子':[['癸',1.00]],
+  '丑':[['己',0.60],['癸',0.25],['辛',0.15]],
+  '寅':[['甲',0.60],['丙',0.25],['戊',0.15]],
+  '卯':[['乙',1.00]],
+  '辰':[['戊',0.60],['乙',0.25],['癸',0.15]],
+  '巳':[['丙',0.60],['庚',0.25],['戊',0.15]],
+  '午':[['丁',0.70],['己',0.30]],
+  '未':[['己',0.60],['丁',0.25],['乙',0.15]],
+  '申':[['庚',0.60],['壬',0.25],['戊',0.15]],
+  '酉':[['辛',1.00]],
+  '戌':[['戊',0.60],['辛',0.25],['丁',0.15]],
+  '亥':[['壬',0.70],['甲',0.30]]
+};
+/* 禄（临官）与刃（帝旺） */
+var LU  = {'甲':'寅','乙':'卯','丙':'巳','丁':'午','戊':'巳','己':'午','庚':'申','辛':'酉','壬':'亥','癸':'子'};
+var REN = {'甲':'卯','乙':'寅','丙':'午','丁':'巳','戊':'午','己':'巳','庚':'酉','辛':'申','壬':'子','癸':'亥'};
+/* 三会 / 三合 */
+var SANHUI = [
+  {z:['寅','卯','辰'], w:'木'},{z:['巳','午','未'], w:'火'},
+  {z:['申','酉','戌'], w:'金'},{z:['亥','子','丑'], w:'水'}
+];
+var SANHE = [
+  {z:['申','子','辰'], w:'水'},{z:['亥','卯','未'], w:'木'},
+  {z:['寅','午','戌'], w:'火'},{z:['巳','酉','丑'], w:'金'}
+];
+
+/* ============ 3. 通用工具 ============ */
+function shiShen(dayGan, other){
+  if(!other) return '';
+  var dw = GAN_WX[dayGan], ow = GAN_WX[other];
+  var same = (!!GAN_YANG[dayGan] === !!GAN_YANG[other]);
+  if(dw === ow)            return same ? '比肩' : '劫财';
+  if(SHENG[dw] === ow)     return same ? '食神' : '伤官';
+  if(KE[dw] === ow)        return same ? '偏财' : '正财';
+  if(KE[ow] === dw)        return same ? '七杀' : '正官';
+  if(SHENG[ow] === dw)     return same ? '偏印' : '正印';
+  return '';
+}
+var SS_CLASS = {
+  '比肩':'比劫','劫财':'比劫','食神':'食伤','伤官':'食伤',
+  '偏财':'财','正财':'财','七杀':'官杀','正官':'官杀','偏印':'印','正印':'印'
+};
+function wxClass(dayGan, wx){
+  var me = GAN_WX[dayGan];
+  if(wx === me)          return '比劫';
+  if(SHENG[wx] === me)   return '印';
+  if(SHENG[me] === wx)   return '食伤';
+  if(KE[me] === wx)      return '财';
+  if(KE[wx] === me)      return '官杀';
+  return '闲';
+}
+function sumWx(p){
+  var s = 0; for(var i=0;i<WX5.length;i++) s += p[WX5[i]] || 0; return s;
+}
+function normPct(p){
+  var t = sumWx(p), o = {};
+  for(var i=0;i<WX5.length;i++) o[WX5[i]] = t ? (p[WX5[i]] || 0) / t * 100 : 0;
+  return o;
+}
+
+/* 三合三会成局 → {支:化神} */
+function detectJu(zhis){
+  var set = {}, map = {}, used = {};
+  for(var i=0;i<zhis.length;i++) set[zhis[i]] = 1;
+  var k, j;
+  for(k=0;k<SANHUI.length;k++){
+    j = SANHUI[k];
+    if(j.z[0] in set && j.z[1] in set && j.z[2] in set){
+      for(i=0;i<3;i++){ map[j.z[i]] = j.w; used[j.z[i]] = 1; }
+    }
+  }
+  for(k=0;k<SANHE.length;k++){
+    j = SANHE[k];
+    if(j.z[0] in set && j.z[1] in set && j.z[2] in set && !(j.z[0] in used) && !(j.z[1] in used) && !(j.z[2] in used)){
+      for(i=0;i<3;i++){ map[j.z[i]] = j.w; used[j.z[i]] = 1; }
+    }
+  }
+  return map;
+}
+
+/* 五行力量（判通关/病药/忌神）—— 合会成局后藏干尽归化神 */
+function wuxingPower(P, ju){
+  var p = {'木':0,'火':0,'土':0,'金':0,'水':0}, i, k;
+  var gans = [P.yearGan, P.monthGan, P.dayGan, P.timeGan];
+  for(i=0;i<gans.length;i++) p[GAN_WX[gans[i]]] += 1.0;
+  var zw = [['yearZhi',0.9],['monthZhi',1.6],['dayZhi',1.1],['timeZhi',0.9]];
+  for(k=0;k<zw.length;k++){
+    var z = P[zw[k][0]], w = zw[k][1];
+    if(ju[z]){ p[ju[z]] += w; continue; }
+    var hg = HIDE[z];
+    for(i=0;i<hg.length;i++) p[GAN_WX[hg[i][0]]] += hg[i][1] * w;
+  }
+  return p;
+}
+
+/* 均时差（分钟），视太阳时 − 平太阳时
+   用 Date.UTC 算年内日序 N：若用本地时间相减，中国 1986–1991 年行夏令时
+   （4 月中—9 月中为 UTC+9，其余 UTC+8），年初与当日偏移不同会使 N 少一天、EoT 偏约 0.1~0.5 分钟；
+   UTC 算法与运行环境时区无关，结果确定。 */
+function equationOfTime(y, m, d){
+  var N = Math.floor((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 1)) / 86400000) + 1;
+  var B = 2 * Math.PI * (N - 81) / 364;
+  return 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+}
+/* 时支：23:00–00:59 为子 */
+function hourToZhiIdx(h){ return Math.floor(((h + 1) % 24) / 2); }
+/* 五鼠遁：甲己起甲子、乙庚起丙子、丙辛起戊子、丁壬起庚子、戊癸起壬子。
+   注：paipan() 现已改用库内 getTime()（与 index.html 一致），本函数不再参与排盘；
+   hourToZhiIdx 仍被 _dev/eot-impact.js 引用。两者均保留备查。 */
+function timeGanByDay(dayGan, zhiIdx){
+  return GAN[((GAN.indexOf(dayGan) % 5) * 2 + zhiIdx) % 10];
+}
+/* ============ 4. 排盘（真太阳时校正 + 年月/日时分源） ============ */
+/* 排盘口径严格对齐 index.html（参照排盘）：
+   · 年柱、月柱由「节气」决定，节气是绝对天文时刻 —— 必须用【北京时间】去比对；
+   · 日柱、时柱由当地太阳位置决定 —— 用【真太阳时】。
+   若把真太阳时直接喂给库去取年月柱，跨节气的那几个小时会算错整年整月。 */
+function paipan(opt){
+  var y = opt.y, mo = opt.mo, d = opt.d, h = opt.h, mi = opt.mi;
+  var lon = opt.lon;
+  // 晚子时（23:00–23:59）日柱取法：2 = 日柱算当天（夜子时派，默认）；1 = 日柱算次日（子正换日派）
+  var sect = (opt.sect === 1) ? 1 : 2;
+
+  // ---- 真太阳时校正 ----
+  // 真太阳时 = 平太阳时（含经度校正）+ 均时差；均时差为必修项，不设开关
+  // （量级 −14.2 ~ +16.4 分钟，足以跨过时辰分界，故不可省）
+  var lonMin = (lon - 120) * 4;
+  var eotMin = equationOfTime(y, mo, d);
+  var totalMin = lonMin + eotMin;
+  var base = new Date(y, mo - 1, d, h, mi, 0);
+  var tt = new Date(base.getTime() + Math.round(totalMin) * 60000); // 分钟取整，与 index.html 一致
+
+  // 校正是否跨日（供提示）
+  var crossed = (tt.getDate() !== d) || (tt.getMonth() + 1 !== mo) || (tt.getFullYear() !== y);
+
+  // 北京时间（原样）：年柱、月柱、农历、大运起运均以此为准
+  var solarBJ = Solar.fromYmdHms(y, mo, d, h, mi, 0);
+  var lunarBJ = solarBJ.getLunar();
+  var ecBJ = lunarBJ.getEightChar();
+
+  // 真太阳时：日柱、时柱以此为准
+  var solarLocal = Solar.fromYmdHms(tt.getFullYear(), tt.getMonth() + 1, tt.getDate(), tt.getHours(), tt.getMinutes(), 0);
+  var lunar = solarLocal.getLunar();
+  var ec = lunar.getEightChar();
+  ec.setSect(sect);
+
+  var yearGZ  = ecBJ.getYear();
+  var monthGZ = ecBJ.getMonth();
+  var dayGZ   = ec.getDay();    // sect 2 → 0 点换日；sect 1 → 23 点换日
+  // 时柱随库：库内时干恒由 dayGanIndexExact（23 点换日）起五鼠遁，
+  // 故晚子时时干用次日日干 —— 此为库的固定行为，与 sect 无关，index.html 亦然。
+  var timeGZ  = ec.getTime();
+  var dayGan = dayGZ.charAt(0), dayZhi = dayGZ.charAt(1);
+  var timeGan = timeGZ.charAt(0), timeZhi = timeGZ.charAt(1);
+
+  var P = {
+    yearGZ: yearGZ, monthGZ: monthGZ, dayGZ: dayGZ, timeGZ: timeGZ,
+    yearGan: yearGZ.charAt(0), yearZhi: yearGZ.charAt(1),
+    monthGan: monthGZ.charAt(0), monthZhi: monthGZ.charAt(1),
+    dayGan: dayGan, dayZhi: dayZhi,
+    timeGan: timeGan, timeZhi: timeZhi
+  };
+  P.ju = detectJu([P.yearZhi, P.monthZhi, P.dayZhi, P.timeZhi]);
+
+  // 节气（北京时间口径，供核对年／月柱分界）
+  var jieQi = '';
+  try{
+    var pj = lunarBJ.getPrevJieQi(true), nj = lunarBJ.getNextJieQi(true);
+    if(pj) jieQi = '生于「' + pj.getName() + '」之后' + (nj ? '、「' + nj.getName() + '」之前' : '');
+  }catch(e){}
+
+  // 大运：起运由库内 getYun 定（三日折一年、一日折四月、一时辰折十日，不自行折算）。
+  // 与 index.html 一致：源取【北京时间】，sect 固定 1。
+  var yun = null, daYun = [];
+  try{
+    yun = ecBJ.getYun(opt.sex, 1); // 性别 1 男 / 0 女
+    var arr = yun.getDaYun();
+    for(var i = 1; i < arr.length && daYun.length < 8; i++){
+      daYun.push({
+        gz: arr[i].getGanZhi(),
+        startAge: arr[i].getStartAge(), endAge: arr[i].getEndAge(),
+        startYear: arr[i].getStartYear(), endYear: arr[i].getEndYear()
+      });
+    }
+  }catch(e){ /* 大运失败不影响主流程 */ }
+
+  return {
+    solar: solarBJ, lunar: lunarBJ, eightChar: ec, P: P,
+    sect: sect, jieQi: jieQi,
+    localSolar: solarLocal, localLunar: lunar,
+    trueDate: tt,
+    corr: {
+      lonMin: lonMin, eotMin: eotMin, totalMin: totalMin,
+      lon: lon, crossed: crossed,
+      beijing: base, trueTime: tt
+    },
+    yunStart: yun ? {y: yun.getStartYear(), m: yun.getStartMonth(), d: yun.getStartDay()} : null,
+    daYun: daYun
+  };
+}
+
+/* 十神 / 藏干 辅助 */
+function zhiShiShen(dayGan, zhi){
+  var hg = HIDE[zhi], out = [];
+  for(var i=0;i<hg.length;i++) out.push(shiShen(dayGan, hg[i][0]));
+  return out;
+}
+function wuxingSummary(P, ju){
+  var p = wuxingPower(P, ju);
+  return {raw: p, pct: normPct(p)};
+}
+/* ============ 5. 诊断一：旺衰 ============ */
+function calcWangShuai(P, ju){
+  var me = GAN_WX[P.dayGan];
+  function helpW(z){
+    if(ju[z]){ var hw = ju[z]; return (hw === me || SHENG[hw] === me) ? 1 : 0; }
+    var hg = HIDE[z], w = 0;
+    for(var i=0;i<hg.length;i++){
+      var wx = GAN_WX[hg[i][0]];
+      if(wx === me || SHENG[wx] === me) w += hg[i][1];
+    }
+    return Math.min(w, 1);
+  }
+  var wLing = helpW(P.monthZhi), wRi = helpW(P.dayZhi),
+      wShi = helpW(P.timeZhi),  wNian = helpW(P.yearZhi);
+  var sLing = 40*wLing, sRi = 25*wRi, sShi = 15*wShi, sNian = 8*wNian;
+
+  var sSheng = 0, sZhu = 0, tian = [P.yearGan, P.monthGan, P.timeGan], tianInfo = [];
+  for(var i=0;i<tian.length;i++){
+    var g = tian[i], ss = shiShen(P.dayGan, g), cls = SS_CLASS[ss];
+    if(cls === '比劫'){ sZhu += 5; tianInfo.push({g:g, ss:ss, add:'得助 +5'}); }
+    else if(cls === '印'){ sSheng += 5; tianInfo.push({g:g, ss:ss, add:'得生 +5'}); }
+    else tianInfo.push({g:g, ss:ss, add:'—'});
+  }
+  var raw = sLing + sRi + sShi + sNian + sSheng + sZhu;
+  var MAX = 103;
+  var norm = raw / MAX * 100;
+  var level = norm > 65 ? '身强' : (norm >= 45 ? '中和' : '身弱');
+  return {
+    me: me, raw: raw, max: MAX, norm: norm, level: level, tianInfo: tianInfo,
+    selfCamp: (norm > 65 ? '偏强' : (norm >= 45 ? '中和' : '偏弱')),
+    items: [
+      {k:'得令', s:'月支 '+P.monthZhi, v:sLing, max:40, note:'印比权重 '+wLing.toFixed(2)},
+      {k:'得地', s:'日支 '+P.dayZhi, v:sRi,  max:25, note:'印比权重 '+wRi.toFixed(2)},
+      {k:'得地', s:'时支 '+P.timeZhi, v:sShi, max:15, note:'印比权重 '+wShi.toFixed(2)},
+      {k:'得地', s:'年支 '+P.yearZhi, v:sNian,max:8,  note:'印比权重 '+wNian.toFixed(2)},
+      {k:'得生', s:'天干印星', v:sSheng, max:15, note:'每字 5 分'},
+      {k:'得助', s:'天干比劫', v:sZhu,   max:15, note:'每字 5 分'}
+    ]
+  };
+}
+
+/* ============ 6. 诊断二：格局 ============ */
+function calcGeJu(P, ws){
+  var me = GAN_WX[P.dayGan];
+  var hides = HIDE[P.monthZhi];
+  var tian = [P.yearGan, P.monthGan, P.timeGan];
+  var chosen = null, via = '';
+  for(var i=0;i<hides.length;i++){
+    if(tian.indexOf(hides[i][0]) > -1){ chosen = hides[i][0]; via = '月支藏干透于天干'; break; }
+  }
+  if(!chosen){ chosen = hides[0][0]; via = '未透，取月支本气'; }
+
+  var ss = shiShen(P.dayGan, chosen);
+  var cls = SS_CLASS[ss];
+  var wxGe = GAN_WX[chosen];
+  var geName = ss + '格';
+  var isBiJie = (cls === '比劫');
+  var structureNote = '';
+  if(isBiJie){
+    if(P.monthZhi === LU[P.dayGan]){ geName = '建禄格'; structureNote = '月支为日主临官之地（禄），比劫不成格，以建禄论。'; }
+    else if(P.monthZhi === REN[P.dayGan]){ geName = '月刃格（羊刃）'; structureNote = '月支为日主帝旺之地（刃），比劫不成格，以月劫论。'; }
+    else { geName = '比劫不成格'; structureNote = '月令取用落于比劫，不成格，以建禄／月劫论。'; }
+  }
+
+  /* 格局所需五行（格神 + 相神）。v = 加权分值，默认 30。 */
+  var need = [];
+  function addNeed(w, why, v){ if(w && !need.some(function(x){return x.wx===w;})) need.push({wx:w, why:why, v: (v === undefined ? 30 : v)}); }
+
+  if(isBiJie){
+    /* 月劫／建禄格：月令落比劫 —— 比劫本身不是「用神」，而是须被制、被泄、被耗的对象。
+       故此处三条与一般格局不同：
+       ① 不做「格神本体」加分。给月劫加劫财，等于火上浇油；
+       ② 相神绝不取印。印生比劫，反助其势，在月劫格里印是仇神不是相神；
+       ③ 正统取法为「官杀制劫为首取、财星耗劫为辅（且财生官）、食伤泄秀为可替代路」。
+          食伤减半记分 —— 它虽能泄劫，却同时克用神（官杀），故不与官杀、财并列。 */
+    if(ws.norm < 45){
+      addNeed(SHENG_BY[me], '身弱宜印化劫（相神）');
+      addNeed(SHENG[me], '食伤泄秀（替代路）', 15);
+    } else {
+      addNeed(KE_BY[me], '官杀制劫（相神·首取）');
+      addNeed(KE[me], '财星耗劫（相神）');
+      addNeed(SHENG[me], '食伤泄秀（替代路，克用神故减半）', 15);
+    }
+  } else {
+    addNeed(wxGe, '格神本体（'+ss+'）');
+    if(cls === '官杀'){
+      if(ws.norm < 45){ addNeed(SHENG_BY[me], '身弱宜印化杀（相神）'); }
+      else { addNeed(SHENG[me], '身强宜食伤制杀（相神）'); }
+      addNeed(KE[me], '财星生官');
+    } else if(cls === '财'){
+      addNeed(SHENG[me], '食伤生财（相神）');
+      addNeed(KE_BY[me], '官星护财');
+    } else if(cls === '印'){
+      addNeed(KE_BY[me], '官杀生印（相神）');
+    } else if(cls === '食伤'){
+      if(ss === '伤官' && ws.norm < 45) addNeed(SHENG_BY[me], '伤官佩印（相神）');
+      else addNeed(KE[me], '伤官生财（相神）');
+      addNeed(me, '比劫助身');
+    }
+  }
+
+  /* 破格与救应：天干克格神者。
+     但须排除「正用」——食神配官、食神制杀、伤官架杀、伤官佩印，都是成格之法，不可误判为破格 */
+  var breakers = [];
+  for(i=0;i<tian.length;i++){
+    var gT = tian[i];
+    if(gT === chosen) continue;
+    if(KE[GAN_WX[gT]] !== wxGe) continue;
+    var gSS = shiShen(P.dayGan, gT), gCls = SS_CLASS[gSS];
+    var isPo = true;
+    if(cls === '官杀'){
+      if(gSS === '食神') isPo = false;                    // 食神配官 / 食神制杀 —— 正用
+      if(ss === '七杀' && gSS === '伤官') isPo = false;    // 伤官架杀 —— 正用
+    } else if(cls === '食伤'){
+      if(gCls === '印') isPo = false;                     // 伤官佩印 / 食神配印 —— 正用
+    }
+    if(isPo) breakers.push(gT);
+  }
+  var saviors = [];
+  if(breakers.length){
+    for(i=0;i<tian.length;i++){
+      if(tian[i] === chosen || breakers.indexOf(tian[i]) > -1) continue;
+      if(KE[GAN_WX[tian[i]]] === GAN_WX[breakers[0]]) saviors.push(tian[i]);
+    }
+  }
+  var breakNames = breakers.map(function(g){
+    var s = shiShen(P.dayGan, g), c = SS_CLASS[s];
+    if(c === '食伤' && ss === '正官') return s + '克正官（伤官见官）';
+    if(c === '财'   && cls === '印')   return s + '克' + ss + '（财星破印）';
+    if(c === '印'   && cls === '食伤') return s + '克' + ss + '（枭神夺食）';
+    if(c === '比劫' && cls === '财')   return s + '克' + ss + '（比劫夺财）';
+    if(c === '官杀' && cls === '食伤') return s + '克' + ss + '（官杀夺食）';
+    if(c === '财'   && cls === '食伤') return s + '克' + ss + '（财泄食伤）';
+    return s + '克' + ss;
+  });
+  var state = '成格';
+  if(breakers.length && saviors.length) state = '破而有救';
+  else if(breakers.length) state = '破格';
+  if(isBiJie && state === '成格') state = '不成格（不论成破，以建禄／月劫取用）';
+
+  return {
+    chosen: chosen, via: via, ss: ss, cls: cls, wx: wxGe,
+    geName: geName, isBiJie: isBiJie, structureNote: structureNote,
+    need: need, breakers: breakers, breakNames: breakNames,
+    saviors: saviors, state: state
+  };
+}
+
+/* ============ 7. 诊断三：调候（《穷通宝鉴》口径） ============ */
+var TIAOHOU = {
+'甲':{寅:'丙癸',卯:'庚丙丁',辰:'庚丁壬',巳:'癸丁庚',午:'癸丁庚',未:'癸丁庚',申:'庚丁壬',酉:'庚丁丙',戌:'庚丁壬癸',亥:'庚丁丙戊',子:'丁庚丙',丑:'丁庚丙'},
+'乙':{寅:'丙癸',卯:'丙癸',辰:'癸丙戊',巳:'癸',午:'癸丙',未:'癸丙',申:'丙癸己',酉:'癸丙丁',戌:'癸辛',亥:'丙戊',子:'丙',丑:'丙'},
+'丙':{寅:'壬庚',卯:'壬己',辰:'壬甲',巳:'壬庚',午:'壬庚',未:'壬庚',申:'壬戊',酉:'壬癸',戌:'甲壬',亥:'甲戊庚壬',子:'壬戊己',丑:'壬甲'},
+'丁':{寅:'甲庚',卯:'庚甲',辰:'甲庚',巳:'甲庚',午:'壬庚癸',未:'甲壬庚',申:'甲庚丙戊',酉:'甲庚丙戊',戌:'甲庚戊',亥:'甲庚',子:'甲庚',丑:'甲庚'},
+'戊':{寅:'丙甲癸',卯:'丙甲癸',辰:'甲丙癸',巳:'甲丙癸',午:'壬甲丙',未:'癸丙甲',申:'丙癸甲',酉:'丙癸甲',戌:'甲丙癸',亥:'甲丙',子:'丙甲',丑:'丙甲'},
+'己':{寅:'丙庚甲',卯:'甲癸丙',辰:'丙癸甲',巳:'癸丙',午:'癸丙',未:'癸丙',申:'丙癸',酉:'丙癸',戌:'甲丙癸',亥:'丙甲戊',子:'丙甲戊',丑:'丙甲戊'},
+'庚':{寅:'戊甲壬丙丁',卯:'丁甲庚丙',辰:'甲丁壬癸',巳:'壬戊丙丁',午:'壬癸',未:'丁甲壬',申:'丁甲',酉:'丁甲丙',戌:'甲壬',亥:'丁丙',子:'丁甲丙',丑:'丙丁甲'},
+'辛':{寅:'己壬庚',卯:'壬甲',辰:'壬甲',巳:'壬甲癸',午:'壬己癸',未:'壬庚甲',申:'壬甲戊',酉:'壬甲',戌:'壬甲',亥:'壬丙',子:'丙戊壬甲',丑:'丙壬戊己'},
+'壬':{寅:'庚丙戊',卯:'戊辛庚',辰:'甲庚',巳:'壬辛庚癸',午:'癸庚辛',未:'辛甲',申:'戊丁',酉:'甲庚',戌:'甲丙',亥:'戊丙庚',子:'戊丙',丑:'丙丁甲'},
+'癸':{寅:'辛丙',卯:'庚辛',辰:'丙辛甲',巳:'辛',午:'庚壬癸',未:'庚壬癸',申:'丁',酉:'辛丙',戌:'辛甲壬癸',亥:'庚辛戊丁',子:'丙辛',丑:'丙丁'}
+};
+function calcTiaoHou(P, ws, pct){
+  var str = (TIAOHOU[P.dayGan] || {})[P.monthZhi] || '';
+  var me = GAN_WX[P.dayGan], wxYin = SHENG_BY[me];
+  /* 调候表是按「日干 × 月支」查的字面表，本身不含日主强弱 ——
+     而《穷通宝鉴》用调候的本意是「补气候之偏」，不是给已经很旺的一方添柴。
+     故这里补上关键一步：日主阵营（本气 + 印）已占比过半、且日主不弱时，
+     把调候方里的比劫与印一并剔除。
+     否则土旺之局会被调候补出更多土／火，直接顶掉真正的用神
+     （本工具曾在「戊土辰月」把丙火判成喜神，根源之一即此）。
+     注意只剔「生扶身者」，不剔财官食伤 —— 那些是克泄耗，不会助旺。 */
+  var selfPct = pct ? (pct[me] + pct[wxYin]) : 0;
+  var dropSupport = !!(pct && ws && ws.norm >= 45 && selfPct >= 50);
+  var gans = str.split(''), seen = {}, order = [], dropped = [];
+  for(var i=0;i<gans.length;i++){
+    var wx = GAN_WX[gans[i]];
+    if(dropSupport && (wx === me || wx === wxYin)){
+      if(!seen[wx]){ seen[wx] = 1; dropped.push({gan:gans[i], wx:wx}); }
+      continue;
+    }
+    if(!seen[wx]){ seen[wx] = 1; order.push({gan:gans[i], wx:wx}); }
+  }
+  var urgent = ['亥','子','丑','巳','午','未'].indexOf(P.monthZhi) > -1;
+  var weights = urgent ? [40,25,15,10,8] : [22,13,8,5,5];
+  var label = urgent ? '高（冬夏寒暖失衡，调候为急）' : '低（春秋气候平和，调候次之）';
+  return {
+    raw: str, gans: gans, order: order, dropped: dropped,
+    droppedWhy: dropSupport
+      ? '本局日主阵营（' + me + '＋' + wxYin + '）已占 ' + fx(selfPct, 1) + '%，调候方中属于比劫／印星者不再计入'
+      : '',
+    urgent: urgent, weights: weights, label: label
+  };
+}
+
+/* ============ 8. 诊断四：病药 ============ */
+function calcBingYao(P, ws, pct){
+  var me = GAN_WX[P.dayGan];
+  var wxYin = SHENG_BY[me], wxShiShang = SHENG[me], wxCai = KE[me], wxGuan = KE_BY[me];
+  var vBiJie = pct[me], vYin = pct[wxYin], vShi = pct[wxShiShang],
+      vCai = pct[wxCai], vGuan = pct[wxGuan];
+  var self = vBiJie + vYin;
+
+  var tianSS = [P.yearGan, P.monthGan, P.timeGan].map(function(g){ return shiShen(P.dayGan, g); });
+  var zhiSS = []
+    .concat(zhiShiShen(P.dayGan, P.yearZhi))
+    .concat(zhiShiShen(P.dayGan, P.monthZhi))
+    .concat(zhiShiShen(P.dayGan, P.dayZhi))
+    .concat(zhiShiShen(P.dayGan, P.timeZhi));
+  var allSS = tianSS.concat(zhiSS);
+  function hasShen(a){ return allSS.indexOf(a) > -1; }
+
+  var out = [];
+  var F = function(n){ return n.toFixed(1) + '%'; };
+
+  /* 1 官杀攻身 */
+  if(ws.norm < 45 && vGuan >= self * 0.85 && vGuan >= 15){
+    out.push({
+      name:'官杀攻身', bug:wxGuan,
+      desc:'身弱而官杀当权（官杀 '+F(vGuan)+'，日主阵营 '+F(self)+'），克身太过，日主难以任杀。',
+      yao: wxYin, yaoSS:'印星', yaoNote:'印星化杀生身，为第一药',
+      fu: me, fuSS:'比劫', fuNote:'比劫帮身，为辅助'
+    });
+  }
+  /* 2 财多身弱 */
+  if(ws.norm < 45 && vCai >= self * 0.85 && vCai >= 15){
+    out.push({
+      name:'财多身弱', bug:wxCai,
+      desc:'财星重叠而日主根浅（财 '+F(vCai)+'，日主阵营 '+F(self)+'），财多为累，身不胜财。',
+      yao: me, yaoSS:'比劫', yaoNote:'比劫帮身任财，为第一药',
+      fu: wxYin, fuSS:'印星', fuNote:'印星生身，为辅助'
+    });
+  }
+  /* 3 比劫夺财 */
+  if(ws.norm >= 45 && vCai > 4 && vBiJie >= vCai * 1.5 && vBiJie >= 18){
+    out.push({
+      name:'比劫夺财', bug:me,
+      desc:'比劫成群而财星单薄（比劫 '+F(vBiJie)+'，财星 '+F(vCai)+'），群劫争财，财不能聚。',
+      yao: wxGuan, yaoSS:'官杀', yaoNote:'官杀制伏比劫，为第一药',
+      fu: wxShiShang, fuSS:'食伤', fuNote:'食伤通关，化比劫以生财'
+    });
+  }
+  /* 4 枭神夺食 */
+  if(vYin >= 15 && vShi > 3 && vYin >= vShi * 1.4){
+    out.push({
+      name:'枭神夺食', bug:wxYin,
+      desc:'印星过重而食伤受制（印 '+F(vYin)+'，食伤 '+F(vShi)+'），枭神夺食，生路被堵。',
+      yao: wxCai, yaoSS:'财星', yaoNote:'财星制枭护食，为第一药',
+      fu: wxShiShang, fuSS:'食伤', fuNote:'食伤自身吐秀'
+    });
+  }
+  /* 5 伤官见官 */
+  if(tianSS.indexOf('伤官') > -1 && hasShen('正官')){
+    out.push({
+      name:'伤官见官', bug:wxShiShang,
+      desc:'天干透伤官而原局见正官，伤官克官，格局与人事易起冲突。',
+      yao: wxYin, yaoSS:'印星', yaoNote:'印星制伤官，为第一药',
+      fu: wxCai, fuSS:'财星', fuNote:'财星化伤生官，顺势而通'
+    });
+  }
+
+  /* 药之落点：每味药记 20 分，若落扶抑忌神则封顶 15 */
+  return {
+    list: out, self: self,
+    yaos: out.map(function(x){ return {wx:x.yao, ss:x.yaoSS, from:x.name, note:x.yaoNote}; }),
+    fus:  out.map(function(x){ return {wx:x.fu,  ss:x.fuSS,  from:x.name, note:x.fuNote}; }),
+    penalties: out.map(function(x){ return {wx:x.bug, from:x.name, v:15}; })
+  };
+}
+
+/* ============ 9. 诊断五：通关 ============ */
+function calcTongGuan(pct){
+  var cands = [];
+  for(var i=0;i<WX5.length;i++){
+    var a = WX5[i], b = KE[a];
+    var pa = pct[a], pb = pct[b];
+    // 「相战」须双方都有力量且势均力敌；一方碾压另一方属顺势，不是战
+    if(pa >= 14 && pb >= 14 && Math.min(pa, pb) / Math.max(pa, pb) >= 0.6){
+      cands.push({
+        ke: a, bei: b, god: SHENG[a],
+        score: Math.min(pa, pb), sum: pa + pb, ratio: Math.min(pa, pb) / Math.max(pa, pb)
+      });
+    }
+  }
+  cands.sort(function(x, y){ return (y.score - x.score) || (y.sum - x.sum); });
+  return cands.length ? cands[0] : null;
+}
+
+/* ============ 10. 综合裁决 ============ */
+function decide(P, ws, gj, th, by, tg, pct){
+  var me = GAN_WX[P.dayGan];
+  var strong = ws.norm > 65, weak = ws.norm < 45;
+
+  /* ---- 从格判定：优先级最高，故最先判 ----
+     弃命从势之**前提**是「日主孤立无援」。原判据只看「旺衰 ≤12 且某行 ≥45%」，
+     会把「印星透干、日主有依」之局误判成从财／从杀。
+     实例：庚午 辛巳 癸未 己未（癸水日主），巳午未三会火局、火占 52.9%，
+     旺衰仅 9.7 —— 旧逻辑据此判「从财格」，弃印比而顺用火财，得「用火喜木」；
+     然年月庚辛双印透干（金 23.5%），日主有金可倚，正统子平不作从论，
+     仍以「财多身弱」取印（金）为用、比劫（水）为喜 —— 方向恰好相反。
+     故增设「日主有明助则不从」之闸：
+       · 天干（年/月/时）透 印 或 比劫 → 有明助；
+       · 日主阵营（本气＋印）占比 ≥ 20% → 有实质依托（含地支通根）。
+     二者居一，即不作从（属「假从」，本工具一律按正格扶抑断）。 */
+  var tianSupport = [];
+  [P.yearGan, P.monthGan, P.timeGan].forEach(function(g){
+    var w = GAN_WX[g];
+    if(w === me || w === SHENG_BY[me]) tianSupport.push(g);
+  });
+  var supPct = pct[me] + pct[SHENG_BY[me]];
+  var hasSupport = tianSupport.length > 0 || supPct >= 20;
+  var cong = null, congReject = null;
+  if(ws.norm <= 12){
+    if(hasSupport){
+      congReject = '旺衰仅 ' + fx(ws.norm, 1) + ' 分，本近从格；但'
+        + (tianSupport.length ? '天干透「' + tianSupport.join('、') + '」为'
+            + (GAN_WX[tianSupport[0]] === me ? '比劫' : '印星') + '、' : '')
+        + '日主阵营（' + me + '＋' + SHENG_BY[me] + '）共占 ' + fx(supPct, 1)
+        + '%，日主有依，故不作从格，仍以扶抑（身弱取印比）为断。';
+    } else {
+      var cand = WX5.filter(function(w){ return w !== me; })
+                    .map(function(w){ return {wx: w, v: pct[w]}; })
+                    .sort(function(a, b){ return b.v - a.v; })[0];
+      var c = wxClass(P.dayGan, cand.wx);
+      var nm = c === '财' ? '从财格' : (c === '官杀' ? '从杀格' : (c === '食伤' ? '从儿格' : ''));
+      if(cand.v >= 45 && nm) cong = {type: nm, wx: cand.wx, v: cand.v};
+    }
+  } else if(ws.norm >= 88){
+    var own = pct[me] + pct[SHENG_BY[me]];
+    if(own >= 78) cong = {type: '从强格（专旺）', wx: me, v: own};
+  }
+
+  /* ---- 病药：从格下「身弱型」之病不作病论（弃命从势，杀旺财旺不为病） ---- */
+  var bingActive = cong
+    ? by.list.filter(function(x){ return x.name !== '官杀攻身' && x.name !== '财多身弱'; })
+    : by.list;
+  var bingDropped = by.list.length - bingActive.length;
+  var penActive = by.penalties.filter(function(p){
+    return bingActive.some(function(x){ return x.name === p.from; });
+  });
+
+  /* 扶抑忌神集合（用于「药落忌神封顶」与「通关降级」） */
+  var jiFuYang = [];
+  if(weak)        jiFuYang = [KE_BY[me], KE[me], SHENG[me]];   // 官杀 财 食伤
+  else if(strong) jiFuYang = [me, SHENG_BY[me]];               // 比劫 印
+  function isJiFu(w){ return jiFuYang.indexOf(w) > -1; }
+
+  var votes = {}, keyed = {};
+  WX5.forEach(function(w){ votes[w] = {total:0, items:[], mods:[]}; });
+  function add(wx, mod, v, why){
+    if(!wx) return;
+    votes[wx].total += v;
+    votes[wx].items.push({mod:mod, add:v, why:why});
+    if(votes[wx].mods.indexOf(mod) < 0) votes[wx].mods.push(mod);
+  }
+  function addOnce(wx, mod, v, why){
+    var k = wx + '|' + mod;
+    if(keyed[k]) return;
+    keyed[k] = 1; add(wx, mod, v, why);
+  }
+
+  /* ① 调候 */
+  th.order.forEach(function(o, idx){
+    var i = Math.min(idx, 4);
+    var v = th.urgent ? [40,25,15,10,8][i] : [22,13,8,5,5][i];
+    addOnce(o.wx, '调候', v, '调候用神 ' + o.gan + '（' + o.wx + '）' + (idx === 0 ? '·主' : '·次'));
+  });
+
+  /* ② 格局 */
+  gj.need.forEach(function(n){ addOnce(n.wx, '格局', n.v === undefined ? 30 : n.v, n.why); });
+  gj.saviors.forEach(function(g){
+    addOnce(GAN_WX[g], '格局', 30, '救应神 ' + g + '（' + shiShen(P.dayGan, g) + '）可制破格之神');
+  });
+
+  /* ③ 通关 */
+  var tongGod = tg ? tg.god : null;
+  if(tg){
+    var tv = isJiFu(tongGod) ? 12 : 25;
+    addOnce(tongGod, '通关', tv,
+      tg.ke + '克' + tg.bei + '两神相战，取' + tongGod + '通关（' + tg.ke + '生' + tongGod + '、' + tongGod + '生' + tg.bei + '）' +
+      (tv === 12 ? '；但该神落扶抑忌神，降为 12' : ''));
+  }
+
+  /* ④ 病药
+     ⚠️ 本段原本读 y.wx / y.from / y.note —— 这三个字段是 by.yaos 上的，
+     而 by.list 的元素只有 name / bug / yao / yaoSS / yaoNote / fu / fuSS / fuNote。
+     于是 y.wx 恒为 undefined，addOnce 首行 `if(!wx) return` 直接把「药」全部吞掉：
+     罚分（走 by.penalties，字段对）照扣，药分却从未计入，「病药相抵」名存实亡。
+     实例：庚午 辛巳 癸未 己未（财多身弱，药=比劫水、辅=印金），水本该 +20 却为 0，
+     致喜神错判为土。现改取 y.yao / y.name / y.yaoNote。 */
+  bingActive.forEach(function(y){
+    var v = isJiFu(y.yao) ? 15 : 20;
+    addOnce(y.yao, '病药', v, y.name + '：' + y.yaoNote + (v === 15 ? '；落扶抑忌神，封顶 15' : ''));
+  });
+  bingActive.forEach(function(y){
+    if(!y.fu) return;
+    addOnce(y.fu, '病药', 10, y.name + '（辅）：' + y.fuNote);
+  });
+
+  /* ⑤ 扶抑 */
+  if(weak){
+    addOnce(me, '扶抑', 15, '身弱宜帮身（比劫）');
+    addOnce(SHENG_BY[me], '扶抑', 15, '身弱宜生身（印星）');
+  } else if(strong){
+    addOnce(KE_BY[me], '扶抑', 15, '身强宜克（官杀）');
+    addOnce(KE[me], '扶抑', 15, '身强宜耗（财星）');
+    addOnce(SHENG[me], '扶抑', 15, '身强宜泄（食伤）');
+  } else {
+    /* 中和档再分一层：旺衰归一值落 45–65 只是模型分，若日主阵营（本气＋印）
+       在原局占比已过半，实质仍偏旺，克泄耗应给较高分。
+       本工具实例：土占 52.1%、日主阵营 62.2%，模型分 62.9 落中和带，
+       扶抑只给 6 分，压不住格局层的错分。 */
+    var selfCampPct = pct[me] + pct[SHENG_BY[me]];
+    var midV = selfCampPct >= 55 ? 10 : 6;
+    var midTag = selfCampPct >= 55 ? '中和偏旺，宜克泄耗' : '中和略宜';
+    addOnce(KE_BY[me], '扶抑', midV, midTag + '（官杀）');
+    addOnce(SHENG[me], '扶抑', midV, midTag + '（食伤）');
+    addOnce(KE[me], '扶抑', midV, midTag + '（财星）');
+  }
+
+  /* ⑥ 一神多用（仅计「需要」类模块，罚分不计） */
+  WX5.forEach(function(w){
+    var needMods = votes[w].mods.filter(function(m){ return m !== '病源罚分' && m !== '被克破'; });
+    if(needMods.length >= 2){
+      addOnce(w, '一神多用', 10, '同时被「' + needMods.join('、') + '」需要');
+    }
+  });
+
+  /* ⑦ 病源罚分（与药分对冲，保证「药不盖过罚分」） */
+  penActive.forEach(function(pn){
+    add(pn.wx, '病源罚分', -15, pn.from + ' 之病源');
+  });
+
+  /* ⑧ 被克破
+     本意：某气在原局被强克，作配饰也难发挥，故扣分。
+     但若该气恰恰已被诊断「需要」（调候／格局／通关／病药／扶抑任一指它），
+     那它弱正是该补的理由，不该再罚 —— 否则会一边判它是用神、一边扣它 12 分，
+     把真正的用神压到喜神之后（本工具曾在「庚午 庚辰 戊辰 己未」把用神木、喜神水各扣 12）。
+     故此处只罚「既被克、又无任何诊断需要」的废气；被需要者保留 0 分记录以供查看。 */
+  WX5.forEach(function(w){
+    var kb = KE_BY[w];
+    if(!(pct[kb] > pct[w] * 1.3 && pct[kb] > 18)) return;
+    var note = '原局 ' + kb + '（' + pct[kb].toFixed(1) + '%）强克 ' + w + '（' + pct[w].toFixed(1) + '%）';
+    var wanted = votes[w].mods.some(function(m){ return m !== '病源罚分' && m !== '被克破'; });
+    if(wanted){
+      add(w, '被克破', 0, note + '；但该气已被诊断需要，弱正是当补之理，故不扣分');
+      return;
+    }
+    add(w, '被克破', -12, note);
+  });
+
+  var rank = WX5.map(function(w){
+    return {wx: w, total: votes[w].total, items: votes[w].items, mods: votes[w].mods};
+  }).sort(function(a, b){ return b.total - a.total; });
+
+  var main, xi, ji, chou, xian = [], basis = [];
+  if(cong){
+    main = cong.wx;
+    xi   = SHENG_BY[main];
+    ji   = KE_BY[main];
+    chou = SHENG_BY[ji];
+    if(xi === ji) xi = KE[main];
+    if(chou === main) chou = KE[main];
+    xian = WX5.filter(function(w){ return [main, xi, ji, chou].indexOf(w) < 0; });
+    basis.push('从格成立（' + cong.type + '）：弃命从势，直接顺用所从之神，扶抑与病药一并让位。');
+    basis.push('从格取用——用神取所从之气「' + main + '」，喜神取生之者「' + xi + '」，忌神取克之者「' + ji + '」，仇神取生忌神者「' + chou + '」。');
+  } else {
+    main = rank[0].wx;
+    xi   = rank[1].wx;
+    ji   = rank[4].wx;
+    chou = rank[3].wx;
+    xian = [rank[2].wx];
+    basis.push('主用神取加权分最高者「' + main + '」（' + rank[0].total + ' 分），喜神取次高者「' + xi + '」（' + rank[1].total + ' 分）。');
+    basis.push('忌神／仇神取加权分最低与次低者「' + ji + '」「' + chou + '」。多套诊断并行的加权体系下，得分垫底即原局最不需要、或被罚分最重的气，用作忌神比按五行循环硬推更贴合实际裁决。');
+  }
+
+  /* 用神与喜神的关系 */
+  var rel;
+  if(main === xi) rel = '同气';
+  else if(SHENG[main] === xi || SHENG[xi] === main) rel = '相生';
+  else rel = '相克';
+
+  return {
+    votes: votes, rank: rank, cong: cong, congReject: congReject,
+    main: main, xi: xi, ji: ji, chou: chou, xian: xian,
+    rel: rel, basis: basis, jiFuYang: jiFuYang,
+    bingActive: bingActive, bingDropped: bingDropped,
+    tongGod: tongGod, strong: strong, weak: weak, me: me
+  };
+}
+
+/* ============ 11. 材质库 ============
+   字段：n 名称 / b 本气 / s 色气 / y 余气(五行数组) / yt 余气原文 / tags [[主用神,喜神,层级]] / note 备注
+   层级：★ 首选  🔸 次选  ○ 备选
+   标签含义：tags[0]=取用（想要的）五行，tags[1]=与其搭配的次五行
+   ======================================== */
+var LIB = [
+  {n:'银子', b:'金', s:'金', y:[], yt:'无余气',
+   tags:[['金','金','★']], note:''},
+  {n:'白铜', b:'金', s:'金', y:[], yt:'无余气',
+   tags:[['金','金','★']], note:''},
+  {n:'黄金', b:'金', s:'土', y:['土'], yt:'土之余气',
+   tags:[['金','土','★'],['土','金','★'],['金','金','○']], note:'余气为土，本气仍为金'},
+  {n:'黄铜', b:'金', s:'土', y:['土'], yt:'土之余气',
+   tags:[['金','土','★']], note:''},
+  {n:'白水晶', b:'土', s:'金', y:['土'], yt:'土之余气',
+   tags:[['金','金','🔸'],['金','土','🔸'],['土','金','🔸'],['水','金','🔸'],['金','水','🔸']],
+   note:'本气为土、色气为金，故金水土三路皆可，但均带土之余气；喜金水而忌土者慎用'},
+  {n:'白砗磲', b:'土', s:'金', y:['土'], yt:'土之余气',
+   tags:[['金','金','○']], note:'喜金忌土者不宜'},
+  {n:'铂金 / 白色K金', b:'金', s:'金', y:[], yt:'工业杂气',
+   tags:[['金','金','○']], note:'含工业杂气，气不纯，故降为备选'},
+  {n:'白玛瑙', b:'土', s:'金', y:['土'], yt:'土之余气',
+   tags:[['金','土','○'],['金','金','○']], note:'矿物色金代行，本气仍为土；喜金忌土者不宜（V5.1 正册补遗·金·附注）'},
+  {n:'翡翠（白）', b:'土', s:'金', y:[], yt:'无余气',
+   tags:[['金','金','🔸']], note:'玉类本气优先、按色取象：白取金（V5.1 正册补遗·按色分列）'},
+
+  {n:'黑珍珠', b:'水', s:'水', y:[], yt:'无余气',
+   tags:[['水','水','★']], note:''},
+  {n:'天然白珍珠', b:'水', s:'金', y:[], yt:'无余气',
+   tags:[['金','水','★'],['水','金','★'],['水','水','🔸']], note:'金水互生，最利金水两路'},
+  {n:'黑玛瑙', b:'土', s:'水', y:['土'], yt:'土之余气',
+   tags:[['水','水','🔸'],['水','金','🔸'],['金','水','🔸']], note:'喜水忌土者不宜'},
+  {n:'青金石', b:'土', s:'水', y:['土'], yt:'土之余气',
+   tags:[['水','水','🔸'],['水','金','🔸']], note:'喜水忌土者不宜'},
+  {n:'黑曜石', b:'土', s:'水', y:['土'], yt:'土之余气',
+   tags:[['水','水','○']], note:'喜水忌土者不宜'},
+  {n:'海蓝宝 / 蓝玉髓', b:'土', s:'水', y:['土'], yt:'土之余气',
+   tags:[['水','水','○']], note:'喜水忌土者不宜'},
+  {n:'珊瑚', b:'水', s:'火', y:['火'], yt:'火之余气',
+   tags:[['水','火','🔸'],['火','水','🔸'],['水','水','🔸']],
+   note:'有机宝石本气归水（生于海）、色赤属火，两说并存；朝日礼制。喜水、喜水火者（V5.1 正册补遗·水·附注，标争议）'},
+  {n:'绿松石', b:'土', s:'水', y:['土'], yt:'土之余气',
+   tags:[['水','土','🔸'],['水','水','🔸']],
+   note:'色水代行＋夕月礼制；青绿另有归木一说，喜水忌土者不宜（V5.1 正册补遗·水·附注）'},
+  {n:'碧玺（蓝）', b:'土', s:'水', y:['土'], yt:'土之余气',
+   tags:[['水','水','○']], note:'矿物色气代行，按色取象：蓝取水（V5.1 正册补遗·按色分列）'},
+
+  {n:'和田黄玉', b:'土', s:'土', y:[], yt:'无余气',
+   tags:[['土','土','★'],['土','火','🔸'],['火','土','🔸']], note:'双土叠加，土气最纯'},
+  {n:'羊脂白玉', b:'土', s:'金', y:['金'], yt:'金之余气',
+   tags:[['土','金','★'],['金','土','★'],['土','土','🔸']], note:'喜土忌金者不宜'},
+  {n:'南红玛瑙', b:'土', s:'火', y:['火'], yt:'火之余气',
+   tags:[['土','火','★'],['火','土','★'],['火','火','🔸']], note:'土火双路皆通'},
+  {n:'蜜蜡', b:'土', s:'土', y:['火'], yt:'微量火气',
+   tags:[['土','土','🔸']], note:'双土叠加，含微量火气'},
+  {n:'黄水晶', b:'土', s:'土', y:['金','水'], yt:'微量金水',
+   tags:[['土','土','🔸']], note:'双土叠加；喜土忌金水者慎用'},
+  {n:'黄釉陶瓷珠', b:'土', s:'土', y:[], yt:'无余气',
+   tags:[['土','土','○']], note:'双土叠加；民俗串珠，亲民（V5.1 正册·土 5 档）'},
+  {n:'琥珀', b:'土', s:'土', y:['火','水'], yt:'含火或水',
+   tags:[['土','土','🔸']],
+   note:'与蜜蜡同物，以色相分列（蜜蜡色纯黄，琥珀多红与透明），故含取各异；祭地安神。气不如蜜蜡纯（V5.1 正册补遗·土·附注）'},
+  {n:'岫玉', b:'土', s:'木', y:['木'], yt:'木之余气',
+   tags:[['土','木','○'],['土','土','○']], note:'玉类本气优先，青绿属木为含气；红山文化用玉（V5.1 正册补遗·土·附注）'},
+  {n:'碧玺（黄）', b:'土', s:'土', y:[], yt:'无余气',
+   tags:[['土','土','○']], note:'矿物色气代行，按色取象：黄取土（V5.1 正册补遗·按色分列）'},
+  {n:'黄玛瑙', b:'土', s:'土', y:['水'], yt:'水之余气',
+   tags:[['土','土','○']], note:'喜土忌水者慎用'},
+
+  {n:'朱砂', b:'土', s:'火', y:['土'], yt:'土之余气',
+   tags:[['火','火','★']], note:'火气燥烈，原局土旺者慎用'},
+  {n:'红玛瑙', b:'土', s:'火', y:['火'], yt:'火之余气',
+   tags:[['火','火','🔸'],['火','土','🔸']], note:''},
+  {n:'红釉珐琅 / 烧蓝', b:'金', s:'火', y:['土','火'], yt:'土火之余气',
+   tags:[['火','火','🔸']], note:'喜火忌金者慎用'},
+  {n:'紫水晶', b:'土', s:'火', y:['水'], yt:'水之余气',
+   tags:[['火','火','○']], note:'喜火忌水者不宜'},
+  {n:'红兔毛水晶', b:'土', s:'火', y:[], yt:'微弱火之余气',
+   tags:[['火','火','○']], note:''},
+  {n:'翡翠（紫）', b:'土', s:'火', y:['土'], yt:'土之余气',
+   tags:[['火','火','🔸']], note:'玉类本气优先、按色取象：紫取火（V5.1 正册补遗·按色分列）'},
+  {n:'碧玺（粉红）', b:'土', s:'火', y:['土'], yt:'土之余气',
+   tags:[['火','火','○']], note:'矿物色气代行，按色取象：粉红取火（V5.1 正册补遗·按色分列）'},
+
+  {n:'绿檀木', b:'木', s:'木', y:[], yt:'无余气',
+   tags:[['木','木','★']], note:'双木叠加，木气最纯'},
+  {n:'紫檀', b:'木', s:'火', y:['火'], yt:'火之余气',
+   tags:[['木','火','★'],['火','木','★'],['木','木','🔸']], note:''},
+  {n:'沉香', b:'木', s:'水', y:['水'], yt:'水之余气',
+   tags:[['木','水','🔸'],['水','木','🔸'],['木','木','🔸']], note:'喜木忌水者不宜'},
+  {n:'老山檀', b:'木', s:'土', y:['土'], yt:'土之余气',
+   tags:[['木','木','🔸'],['木','火','🔸']], note:'喜木忌土者不宜'},
+  {n:'绿玉髓', b:'土', s:'木', y:['土'], yt:'土之余气',
+   tags:[['木','木','○']], note:'喜木忌土者不宜'},
+  {n:'绿幽灵水晶', b:'土', s:'木', y:['土'], yt:'土之余气',
+   tags:[['木','木','○']], note:'喜木忌土者不宜'},
+  {n:'花梨', b:'木', s:'土', y:['土'], yt:'土之余气',
+   tags:[['木','土','🔸'],['木','木','🔸']], note:'木质本气优先，金黄属土为含气（V5.1 正册·木 3 档）'},
+  {n:'绿玛瑙', b:'土', s:'木', y:['土'], yt:'土之余气',
+   tags:[['木','土','○'],['木','木','○']], note:'矿物色木代行；喜木忌土者不宜（V5.1 正册补遗·木·附注）'},
+  {n:'翡翠（绿）', b:'土', s:'木', y:[], yt:'无余气',
+   tags:[['木','木','🔸']], note:'玉类本气优先、按色取象：绿取木（V5.1 正册补遗·按色分列）'},
+  {n:'碧玺（绿）', b:'土', s:'木', y:['土'], yt:'土之余气',
+   tags:[['木','木','○']], note:'矿物色气代行，按色取象：绿取木（V5.1 正册补遗·按色分列）'}
+];
+var TIER_ORDER = {'★':0, '🔸':1, '○':2};
+var TIER_NAME  = {'★':'首选', '🔸':'次选', '○':'备选'};
+function downTier(t){ return t === '★' ? '🔸' : (t === '🔸' ? '○' : null); }
+
+/* ============ 12. 推荐逻辑 ============ */
+function recommend(dec){
+  var A = dec.main, B = dec.xi, C = dec.tongGod, rel = dec.rel;
+  var jiSet = [dec.ji, dec.chou];
+  function isJi(w){ return jiSet.indexOf(w) > -1; }
+
+  function build(A_, B_){
+    var rows = [];
+    LIB.forEach(function(m){
+      var best = null;
+      m.tags.forEach(function(t){
+        if(t[0] === A_ && t[1] === B_){
+          if(!best || TIER_ORDER[t[2]] < TIER_ORDER[best]) best = t[2];
+        }
+      });
+      if(!best) return;
+      var bad = m.y.filter(isJi);
+      var tier = best, warn = '';
+      if(bad.length){
+        var t2 = downTier(best);
+        warn = '余气含「' + bad.join('、') + '」，正落你的忌神／仇神，评级由 ' + best + '（' + TIER_NAME[best] + '）降为 ' + (t2 ? t2 + '（' + TIER_NAME[t2] + '）' : '不推荐');
+        tier = t2;
+      }
+      if(tier) rows.push({m: m, tier: tier, orig: best, warn: warn, partner: B_});
+    });
+    rows.sort(function(a, b){ return TIER_ORDER[a.tier] - TIER_ORDER[b.tier]; });
+    return rows;
+  }
+  function buildByMain(A_){
+    var rows = [], seen = {};
+    LIB.forEach(function(m){
+      if(seen[m.n]) return;
+      var best = null, partner = null;
+      m.tags.forEach(function(t){
+        if(t[0] === A_){
+          if(!best || TIER_ORDER[t[2]] < TIER_ORDER[best]){ best = t[2]; partner = t[1]; }
+        }
+      });
+      if(!best) return;
+      seen[m.n] = 1;
+      var bad = m.y.filter(isJi);
+      var tier = best, warn = '';
+      if(bad.length){
+        var t2 = downTier(best);
+        warn = '余气含「' + bad.join('、') + '」（忌／仇神），评级降为 ' + (t2 ? t2 : '不推荐');
+        tier = t2;
+      }
+      if(tier) rows.push({m: m, tier: tier, orig: best, warn: warn, partner: partner});
+    });
+    rows.sort(function(a, b){ return TIER_ORDER[a.tier] - TIER_ORDER[b.tier]; });
+    return rows;
+  }
+
+  var groups = {star: [], sub: [], cand: [], xianAlt: []};
+
+  if(rel === '相克'){
+    // 通关五行 C：A 克 B 则取 A 所生（金木战取水），B 克 A 则取 B 所生（水火战取木）
+    C = (KE[A] === B) ? SHENG[A] : SHENG[B];
+    var mainRows = buildByMain(A).slice(0, 5);
+    var tongRows = buildByMain(C).slice(0, 5);
+    mainRows.forEach(function(r){ groups[r.tier === '★' ? 'star' : (r.tier === '🔸' ? 'sub' : 'cand')].push(r); });
+    return {
+      rel: rel, A: A, B: B, C: C, groups: groups,
+      combo: {main: mainRows, tong: tongRows},
+      mode: 'combo'
+    };
+  }
+
+  // 相生／同气：取「含 A 与 B 两气」的材质，两个方向都算（A生B 与 B生A 等价）
+  var merged = {}, rows = [];
+  var r1 = build(A, B), r2 = (A === B ? [] : build(B, A));
+  r1.concat(r2).forEach(function(r){
+    var k = r.m.n;
+    if(!merged[k]){ merged[k] = r; rows.push(r); }
+    else if(TIER_ORDER[r.tier] < TIER_ORDER[merged[k].tier]){
+      // 同一材质在两个方向命中，取更高的层级
+      merged[k].tier = r.tier; merged[k].orig = r.orig && TIER_ORDER[r.orig] < TIER_ORDER[merged[k].orig] ? r.orig : merged[k].orig;
+      if(r.warn) merged[k].warn = r.warn;
+    }
+  });
+  rows.sort(function(a, b){ return TIER_ORDER[a.tier] - TIER_ORDER[b.tier]; });
+  if(rows.length < 4){
+    // 兜底：补充「主用神同气」的可替代材质，保留原层级并标为替代项
+    buildByMain(A).forEach(function(r){
+      if(merged[r.m.n]) return;
+      if(r.tier === '★' || r.tier === '🔸'){
+        var r3 = {m: r.m, tier: r.tier, orig: r.tier, warn: r.warn, partner: r.partner, alt: true};
+        merged[r.m.n] = r3; rows.push(r3);
+      }
+    });
+    rows.sort(function(a, b){ return TIER_ORDER[a.tier] - TIER_ORDER[b.tier]; });
+  }
+  rows.forEach(function(r){
+    if(r.tier === '★') groups.star.push(r);
+    else if(r.tier === '🔸') groups.sub.push(r);
+    else groups.cand.push(r);
+  });
+
+  /* 闲神补充：与主用神「同向」的闲神，单开一组列出。
+     判据用「方向」而非「五行生克」—— 主用神与闲神同属印比、或同属克泄耗，即为同向；
+     反向的气会与主用神对冲（如主用神是克泄耗、闲神却是印比），一律不推。
+     这样「用木、喜水、闲金」这类局，金行材质也能露面，而不是被生硬丢掉。 */
+  groups.xianAlt = [];
+  var selfSupport = function(w){ return w === dec.me || w === SHENG_BY[dec.me]; };
+  var mainIsSupport = selfSupport(A);
+  var jiSet2 = [dec.ji, dec.chou];
+  (dec.xian || []).forEach(function(w){
+    if(w === A || w === B) return;
+    if(selfSupport(w) !== mainIsSupport) return;
+    buildByMain(w).filter(function(r){
+      var m = r.m;
+      /* 材质须「干净地」属这一行：本气落忌／仇（如羊脂白玉、白水晶、白砗磲——本气皆土），
+         或余气、配伍落忌／仇者，一律剔除 —— 否则同一条材质会既出现在避忌清单、
+         又出现在推荐里，自相矛盾。 */
+      if(m.b !== w && jiSet2.indexOf(m.b) > -1) return false;
+      if(m.y.some(function(y){ return jiSet2.indexOf(y) > -1; })) return false;
+      if(jiSet2.indexOf(r.partner) > -1) return false;
+      return true;
+    }).slice(0, 4).forEach(function(r){
+      if(merged[r.m.n]) return;
+      merged[r.m.n] = 1;
+      groups.xianAlt.push({m: r.m, tier: '○', orig: r.orig, warn: r.warn,
+                           partner: r.partner, xianAlt: true, xianWx: w});
+    });
+  });
+  return {rel: rel, A: A, B: B, C: C, groups: groups, mode: 'pair', combos: rows};
+}
+
+/* 避忌清单：主取用五行落于忌神／仇神的材质 */
+function buildAvoid(dec){
+  var jiSet = [dec.ji, dec.chou];
+  var out = [];
+  LIB.forEach(function(m){
+    var hit = [];
+    m.tags.forEach(function(t){ if(jiSet.indexOf(t[0]) > -1 && hit.indexOf(t[0]) < 0) hit.push(t[0]); });
+    if(hit.length) out.push({m: m, wx: hit, isJi: hit.indexOf(dec.ji) > -1});
+  });
+  out.sort(function(a, b){ return (b.isJi ? 1 : 0) - (a.isJi ? 1 : 0); });
+  return out;
+}
+
+/* ============ 13. 渲染工具 ============ */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function wxTag(w, extra){
+  if(!w) return '';
+  return '<span class="tag t-' + w + '"><i></i>' + w + (extra ? ' ' + extra : '') + '</span>';
+}
+function fx(n, d){ return Number(n).toFixed(d === undefined ? 1 : d); }
+
+/* ---- 八字卡片 ---- */
+function renderBaZi(pp){
+  var P = pp.P;
+  var cols = [
+    {lbl:'年柱', gz:P.yearGZ, gan:P.yearGan, zhi:P.yearZhi, isDay:false},
+    {lbl:'月柱', gz:P.monthGZ, gan:P.monthGan, zhi:P.monthZhi, isDay:false},
+    {lbl:'日柱', gz:P.dayGZ, gan:P.dayGan, zhi:P.dayZhi, isDay:true},
+    {lbl:'时柱', gz:P.timeGZ, gan:P.timeGan, zhi:P.timeZhi, isDay:false}
+  ];
+  var h = '';
+  h += '<div class="pillars">';
+  cols.forEach(function(c){
+    var ss = c.isDay ? '日主' : shiShen(P.dayGan, c.gan);
+    var hg = HIDE[c.zhi], hideTxt = hg.map(function(x){
+      return esc(x[0]) + '<span style="opacity:.72">' + shiShen(P.dayGan, x[0]) + '</span>';
+    }).join('·');
+    h += '<div class="pillar' + (c.isDay ? ' day' : '') + '">' +
+         '<div class="lbl">' + c.lbl + '</div>' +
+         '<div class="gz"><span class="g">' + c.gan + '</span>' + c.zhi + '</div>' +
+         '<div class="ss">' + (c.isDay ? '<b>日主</b>' : ss) + '</div>' +
+         '<div class="hide">' + hideTxt + '</div>' +
+         '</div>';
+  });
+  h += '</div>';
+
+  var juZhi = Object.keys(P.ju);
+  var juTxt = juZhi.length
+    ? juZhi.map(function(z){ return z + '归' + P.ju[z]; }).join('；') + '（成局，藏干尽归化神）'
+    : '四柱地支未构成三合／三会全局，藏干按本气／中气／余气分算';
+
+  var c = pp.corr;
+  var h2 = '';
+  h2 += '<div class="kv"><span class="k">公历</span><span class="v">' + esc(pp.solar.toYmdHms()) + '</span></div>';
+  h2 += '<div class="kv"><span class="k">农历</span><span class="v">' + esc(pp.lunar.toString()) + '</span></div>';
+  if(pp.jieQi) h2 += '<div class="kv"><span class="k">节气</span><span class="v">' + esc(pp.jieQi) +
+        '　<span style="font-size:12px;color:#8d867c">年柱、月柱只看节气交接的绝对时刻，不因经度改判</span></span></div>';
+  h2 += '<div class="kv"><span class="k">北京时间</span><span class="v">' +
+        c.beijing.getFullYear() + '-' + ('0'+(c.beijing.getMonth()+1)).slice(-2) + '-' + ('0'+c.beijing.getDate()).slice(-2) + ' ' +
+        ('0'+c.beijing.getHours()).slice(-2) + ':' + ('0'+c.beijing.getMinutes()).slice(-2) + '</span></div>';
+  h2 += '<div class="kv"><span class="k">经度校正</span><span class="v">东经 ' + fx(c.lon, 2) + '° → ' +
+        (c.lonMin >= 0 ? '+' : '') + fx(c.lonMin, 1) + ' 分钟</span></div>';
+  h2 += '<div class="kv"><span class="k">均时差</span><span class="v">' +
+        (c.eotMin >= 0 ? '+' : '') + fx(c.eotMin, 1) + ' 分钟' +
+        '　<span style="font-size:12px;color:#8d867c">视太阳时 − 平太阳时，必修项</span></span></div>';
+  h2 += '<div class="kv"><span class="k">真太阳时</span><span class="v"><b>' +
+        c.trueTime.getFullYear() + '-' + ('0'+(c.trueTime.getMonth()+1)).slice(-2) + '-' + ('0'+c.trueTime.getDate()).slice(-2) + ' ' +
+        ('0'+c.trueTime.getHours()).slice(-2) + ':' + ('0'+c.trueTime.getMinutes()).slice(-2) +
+        '</b>（合计 ' + (c.totalMin >= 0 ? '+' : '') + fx(c.totalMin, 1) + ' 分钟' + (c.crossed ? '，已跨日' : '') + '）</span></div>';
+  if(c.trueTime.getHours() === 23){
+    h2 += '<div class="kv"><span class="k">晚子时</span><span class="v">日柱按<b>' +
+          (pp.sect === 1 ? '次日' : '当天') + '</b>（' + (pp.sect === 1 ? '子正换日派' : '夜子时派') +
+          '）　<span style="font-size:12px;color:#8d867c">时柱为子时，时干按库内口径（次日日干）起</span></span></div>';
+  }
+  h2 += '<div class="kv"><span class="k">日主</span><span class="v">' + wxTag(GAN_WX[P.dayGan]) +
+        '<b>' + P.dayGan + '</b>（' + (GAN_YANG[P.dayGan] ? '阳' : '阴') + GAN_WX[P.dayGan] + '）</span></div>';
+  /* 时辰余量：真太阳时距最近时辰分界（01:00 / 03:00 / … / 23:00）还有多少分钟。
+     分界每 120 分钟一个，故余量必落在 0~60。这是判断"时柱稳不稳"的唯一可用量 ——
+     比区县级经度重要得多（区县差异通常仅 1~2 分钟）。 */
+  var tmin = c.trueTime.getHours() * 60 + c.trueTime.getMinutes();
+  var gap = 1440;
+  for(var gi = 0; gi < 12; gi++){
+    var gd = Math.abs(tmin - (60 + 120 * gi));
+    gd = Math.min(gd, 1440 - gd);
+    if(gd < gap) gap = gd;
+  }
+  h2 += '<div class="kv"><span class="k">时辰余量</span><span class="v">距最近时辰分界 <b>' + gap + '</b> 分钟' +
+        (gap <= 10 ? '　<span style="color:#c8452f;font-weight:600">偏紧，须核对出生时间</span>' : '') +
+        '</span></div>';
+  if(gap <= 10){
+    h2 += '<div class="warnline">本例真太阳时距时辰分界只剩 <b>' + gap + ' 分钟</b>：出生时间' +
+          (gap === 0 ? '哪怕只有一两分钟出入' : '只要偏差 ' + gap + ' 分钟以上') +
+          '，时柱即完全不同。出生时间多来自长辈口述，误差十几分钟很常见，' +
+          '请以出生证明或医院记录为准；若无法核实，时柱一柱存疑。</div>';
+  }
+  h2 += '<div class="kv"><span class="k">合会</span><span class="v">' + juTxt + '</span></div>';
+
+  var dy = '';
+  if(pp.daYun.length){
+    dy = '<h3>大运（起运约 ' + (pp.yunStart ? pp.yunStart.y + ' 年 ' + pp.yunStart.m + ' 个月' : '—') + '，年龄为虚岁）</h3><div class="dy">';
+    pp.daYun.forEach(function(d){
+      dy += '<div><div style="font-weight:600">' + d.gz + '</div><div class="a">' + d.startAge + '-' + d.endAge + '岁</div><div class="a">' + d.startYear + '</div></div>';
+    });
+    dy += '</div>';
+  }
+
+  return '<section class="card"><h2>一、四柱排盘</h2>' + h + h2 + dy + '</section>';
+}
+/* ---- 诊断卡片 ---- */
+function barColor(v){
+  if(v > 65) return 'linear-gradient(90deg,#d9b25c,#c8452f)';
+  if(v >= 45) return 'linear-gradient(90deg,#9ab98a,#c9a53e)';
+  return 'linear-gradient(90deg,#7fa9cd,#2f6f9f)';
+}
+function renderDiag(P, ws, gj, th, dec, tg, pct){
+  var by = {list: dec.bingActive};
+  var h = '<section class="card"><h2>二、五套诊断</h2>';
+
+  /* ① 旺衰 */
+  h += '<h3>① 旺衰</h3>';
+  h += '<div class="bar"><span style="width:' + Math.min(100, Math.max(2, ws.norm)) + '%;background:' + barColor(ws.norm) + '"></span></div>';
+  h += '<div class="kv"><span class="k">判定</span><span class="v"><b>' + ws.level + '</b>　原始 ' + fx(ws.raw) + ' / ' + ws.max + ' 分　归一化 <b>' + fx(ws.norm) + '</b> / 100</span></div>';
+  ws.items.forEach(function(it){
+    h += '<div class="kv"><span class="k">' + it.k + '</span><span class="v">' + it.s + ' → <b>' +
+         fx(it.v) + '</b> / ' + it.max + '　<span style="color:#a89f8f">' + it.note + '</span></span></div>';
+  });
+  h += '<div class="note" style="margin-top:8px">' + ws.tianInfo.map(function(t){
+    return '天干 ' + t.g + '（' + t.ss + '）：' + t.add;
+  }).join('　|　') + '</div>';
+  h += '<div class="note">阈值：&gt;65 身强　·　45–65 中和　·　&lt;45 身弱（满分 103，已折算为百分制）</div>';
+
+  /* ② 格局 */
+  h += '<h3>② 格局</h3>';
+  h += '<div class="kv"><span class="k">月令取格</span><span class="v"><b>' + gj.geName + '</b>　（' + gj.via + '：' + gj.chosen + '　→　' + gj.ss + '）</span></div>';
+  if(gj.structureNote) h += '<div class="note">' + gj.structureNote + '</div>';
+  h += '<div class="kv"><span class="k">格局状态</span><span class="v"><b>' + gj.state + '</b></span></div>';
+  if(gj.breakers.length){
+    h += '<div class="kv"><span class="k">破格因素</span><span class="v">' + gj.breakNames.map(esc).join('；') + '</span></div>';
+  }
+  if(gj.saviors.length){
+    h += '<div class="kv"><span class="k">救应</span><span class="v">' + gj.saviors.map(function(g){
+      return esc(g + '（' + shiShen(P.dayGan, g) + '）');
+    }).join('、') + '　可制破格之神</span></div>';
+  }
+  h += '<div class="kv"><span class="k">格局所需</span><span class="v">' + gj.need.map(function(n){
+    return wxTag(n.wx) + '<span style="font-size:12px;color:#8d867c">' + esc(n.why) + '</span>';
+  }).join('<br>') + '</span></div>';
+
+  /* ③ 调候 */
+  h += '<h3>③ 调候</h3>';
+  h += '<div class="kv"><span class="k">查表</span><span class="v">日干 <b>' + P.dayGan + '</b> + 月支 <b>' + P.monthZhi +
+       '</b> → 调候用神 <b>' + th.gans.join('、') + '</b></span></div>';
+  if(th.dropped && th.dropped.length){
+    h += '<div class="kv"><span class="k">已剔除</span><span class="v" style="color:#c8452f">' +
+         th.dropped.map(function(d){ return d.gan + '（' + d.wx + '）'; }).join('、') + '</span></div>';
+    h += '<div class="note">' + esc(th.droppedWhy) + '。调候本意是补气候之偏，不为已旺者添柴 —— ' +
+         '故这部分用神在本局不计入加权。</div>';
+  }
+  h += '<div class="kv"><span class="k">急迫度</span><span class="v"><b>' + (th.urgent ? '高' : '低') + '</b>　' + th.label + '</span></div>';
+  h += '<div class="kv"><span class="k">候选用神</span><span class="v">' +
+       (th.order.length ? th.order.map(function(o, i){
+         return wxTag(o.wx, o.gan + '·第' + (i + 1));
+       }).join(' ') : '<span style="color:#a89f8f">调候方全部被剔除，本局不以调候取用</span>') + '</span></div>';
+
+  /* ④ 病药 */
+  h += '<h3>④ 病药</h3>';
+  if(dec.bingDropped && by.list.length){
+    h += '<div class="note">原局另有 ' + dec.bingDropped + ' 项「身弱型」之病（官杀攻身／财多身弱）。因已成立 <b>' + dec.cong.type +
+         '</b>，弃命从势，官杀旺、财旺不再是病，故不列药。</div>';
+  }
+  if(!by.list.length){
+    h += '<div class="empty">' + (dec.bingDropped
+      ? '原局之病已全部让位于从格，此局不作药神取舍。'
+      : '原局未见「比劫夺财／官杀攻身／财多身弱／枭神夺食／伤官见官」之显病，无特定药神。') + '</div>';
+  } else {
+    by.list.forEach(function(x){
+      h += '<div class="kv"><span class="k">病</span><span class="v"><b>' + x.name + '</b>　' + esc(x.desc) + '</span></div>';
+      h += '<div class="kv"><span class="k">药</span><span class="v">' + wxTag(x.yao, x.yaoSS) + esc(x.yaoNote) +
+           (x.fu ? '　辅：' + wxTag(x.fu, x.fuSS) + esc(x.fuNote) : '') + '</span></div>';
+    });
+    h += '<div class="note">药若落扶抑忌神，加权得分封顶 15；病源另扣 15，二者相抵，确保药不盖过罚分。</div>';
+  }
+
+  /* ⑤ 通关 */
+  h += '<h3>⑤ 通关</h3>';
+  if(tg){
+    h += '<div class="kv"><span class="k">相战</span><span class="v">' + wxTag(tg.ke) + '克' + wxTag(tg.bei) +
+         '　（' + fx(pct[tg.ke]) + '% vs ' + fx(pct[tg.bei]) + '%）</span></div>';
+    h += '<div class="kv"><span class="k">通关神</span><span class="v">' + wxTag(tg.god) +
+         '　' + tg.ke + '生' + tg.god + '、' + tg.god + '生' + tg.bei + '，居中调停</span></div>';
+  } else {
+    h += '<div class="empty">原局两行力量未形成明显对峙——需双方均达 14% 以上且强弱比不低于 0.6，方构成「相战」，故不取通关神。</div>';
+  }
+  h += '</section>';
+  return h;
+}
+
+/* ---- 裁决卡片 ---- */
+function renderVerdict(dec){
+  var h = '<section class="card"><h2>三、综合裁决</h2>';
+  h += '<div class="note" style="margin-bottom:10px">优先级：从格 &gt; 调候 &gt; 格局 &gt; 通关 &gt; 病药 &gt; 扶抑；以' +
+       '「调候（急 40／缓 22 起，逐位递减）· 格局（相神 30／替代路 15）· 通关 25 · 病药 20 · ' +
+       '扶抑（身强 15／中和 6–10）· 一神多用 +10 · 被克破 −12」加权求和落定。' +
+       '<br>另有三条与一般格局不同的处置：① 月劫／建禄格不以比劫为用神、相神不取印；' +
+       '② 日主阵营已过半时，调候方中的比劫／印星剔除；③ 已被诊断需要的神，不再吃「被克破」罚分。</div>';
+  h += '<div class="verdict">';
+  h += '<div class="vbox main"><div class="vt">主用神</div><div class="vv">' + dec.main + '</div></div>';
+  h += '<div class="vbox"><div class="vt">喜神</div><div class="vv">' + dec.xi + '</div></div>';
+  h += '<div class="vbox"><div class="vt">忌神</div><div class="vv">' + dec.ji + '</div></div>';
+  h += '<div class="vbox"><div class="vt">仇神</div><div class="vv">' + dec.chou + '</div></div>';
+  h += '</div>';
+  function whyOf(w){
+    var it = dec.votes[w].items.slice().sort(function(a, b){ return Math.abs(b.add) - Math.abs(a.add); });
+    if(!it.length) return '各诊断均未指向此气';
+    return it[0].mod + (it[0].add > 0 ? ' +' : ' ') + it[0].add;
+  }
+  h += '<div class="kv"><span class="k">忌神</span><span class="v">' + dec.ji +
+       '　<span style="font-size:12px;color:#8d867c">' + (dec.cong ? '克用神者' : '加权 ' + dec.votes[dec.ji].total + ' 分垫底（主因 ' + whyOf(dec.ji) + '）') + '</span></span></div>';
+  h += '<div class="kv"><span class="k">仇神</span><span class="v">' + dec.chou +
+       '　<span style="font-size:12px;color:#8d867c">' + (dec.cong ? '生忌神者' : '加权 ' + dec.votes[dec.chou].total + ' 分次低（主因 ' + whyOf(dec.chou) + '）') + '</span></span></div>';
+  h += '<div class="kv"><span class="k">闲神</span><span class="v">' + (dec.xian.length ? dec.xian.join('　') : '—') + '</span></div>';
+  h += '<div class="kv"><span class="k">用喜关系</span><span class="v"><b>' + dec.rel + '</b>　' +
+       (dec.rel === '同气' ? '主用神与喜神同为一气，可直接主取该气之材质。'
+        : dec.rel === '相生' ? '两者相生（' + (SHENG[dec.main] === dec.xi ? dec.main + '生' + dec.xi : dec.xi + '生' + dec.main) + '），可一物两用。'
+        : '两者相克（' + (KE[dec.main] === dec.xi ? dec.main + '克' + dec.xi : dec.xi + '克' + dec.main) + '），不宜同器直配，须以通关五行调停。') + '</span></div>';
+  var shuang = LIB.filter(function(m){ return m.b === dec.main && m.s === dec.main; });
+  if(shuang.length){
+    h += '<div class="kv"><span class="k">纯料选项</span><span class="v">' + wxTag(dec.main) +
+         '另有「' + dec.main + '气双叠」之纯料：' + shuang.map(function(m){ return esc(m.n); }).join('、') +
+         '　<span style="font-size:12px;color:#8d867c">本气与色气同一，只求主用神一气纯正、或与喜神相克不便同器时，可单取此路</span></span></div>';
+  }
+  h += '<div class="kv"><span class="k">扶抑忌神</span><span class="v">' +
+       (dec.jiFuYang.length ? dec.jiFuYang.map(function(w){ return wxTag(w); }).join(' ') : '身中和，无严格扶抑忌神') + '</span></div>';
+  if(dec.cong){
+    h += '<div class="warnline">从格成立：<b>' + dec.cong.type + '</b>（' + dec.cong.wx + '占 ' + fx(dec.cong.v) + '%），弃命从势，以上裁决直接顺其所从。</div>';
+  } else if(dec.congReject){
+    h += '<div class="note"><b>近从格而未作从</b>：' + esc(dec.congReject) + '</div>';
+  }
+  dec.basis.forEach(function(b){ h += '<div class="note">' + esc(b) + '</div>'; });
+
+  h += '<h3>加权明细' + (dec.cong ? '（仅供参考）' : '') + '</h3>';
+  if(dec.cong) h += '<div class="note">从格成立时取用以「顺其所从」为准，下表加权不再作为最终依据。</div>';
+  dec.rank.forEach(function(r, i){
+    var w = r.wx;
+    var col = r.total > 0 ? '#c08a1e' : (r.total < 0 ? '#c8452f' : '#a89f8f');
+    h += '<div style="padding:7px 0;border-top:' + (i ? '1px dashed #f1ede5' : 'none') + '">';
+    h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">' + wxTag(w) +
+         '<span style="font-size:13px;font-weight:600;color:' + col + '">' + (r.total > 0 ? '+' : '') + r.total + ' 分</span></div>';
+    if(r.items.length){
+      h += '<div style="font-size:12px;color:#8d867c;line-height:1.8;margin-top:2px">' +
+           r.items.map(function(it){
+             return esc(it.mod) + ' ' + (it.add > 0 ? '+' : '') + it.add + '　<span style="color:#b3ac9e">' + esc(it.why) + '</span>';
+           }).join('<br>') + '</div>';
+    } else {
+      h += '<div style="font-size:12px;color:#b3ac9e">各诊断均未指向此气</div>';
+    }
+    h += '</div>';
+  });
+  h += '</section>';
+  return h;
+}
+
+/* ---- 材质条目 ---- */
+function matHTML(r, dec){
+  var m = r.m;
+  var dbl = (m.b === m.s) ? '<span class="badge">' + m.b + '气双叠</span>' : '';
+  var tagTxt = m.tags.map(function(t){
+    return (t[0] === r.partner ? '<b>' + t[0] + '-' + t[1] + t[2] + '</b>' : t[0] + '-' + t[1] + t[2]);
+  }).join('、');
+  var s = '<div class="mat">';
+  s += '<div class="mn">' + esc(m.n) + wxTag(m.s) + dbl +
+       '<span class="badge">' + r.tier + ' ' + TIER_NAME[r.tier] + '</span>' +
+       (r.alt ? '<span class="badge" style="background:#fdf8ec;color:#b5791a;border-color:#f0e2bf">替代项</span>' : '') +
+       (r.xianAlt ? '<span class="badge" style="background:#f3f7fb;color:#4a6f93;border-color:#dbe6f0">闲神可用</span>' : '') +
+       (r.orig !== r.tier && !r.xianAlt ? '<span class="badge" style="background:#fdf2f0;color:#c8452f;border-color:#f2d9d4">原 ' + r.orig + '</span>' : '') +
+       '</div>';
+  s += '<div class="md">本气 <b>' + m.b + '</b>　色气 <b>' + m.s + '</b>　余气 <b>' + m.yt + '</b>　标签 <b>' + tagTxt + '</b></div>';
+  if(r.xianAlt) s += '<div class="md">取自你的<b>闲神「' + r.xianWx + '」</b>一路：不忌，亦非首取。</div>';
+  if(r.alt) s += '<div class="md">说明：此材质未直接标注「' + dec.main + '-' + dec.xi +
+                 '」组合，但本气正合主用神「' + dec.main + '」，作同气替代项列出。</div>';
+  if(m.note) s += '<div class="md">注：' + esc(m.note) + '</div>';
+  if(r.warn) s += '<div class="warnline">' + esc(r.warn) + '</div>';
+  s += '</div>';
+  return s;
+}
+
+/* ---- 推荐卡片 ---- */
+function renderRec(dec, rec, avoid){
+  var h = '<section class="card"><h2>四、配饰推荐</h2>';
+  h += '<div class="note" style="margin-bottom:10px">主用神 <b>' + dec.main + '</b>　喜神 <b>' + dec.xi + '</b>' +
+       (rec.mode === 'combo' ? '　通关神 <b>' + rec.C + '</b>' : '') +
+       (dec.xian && dec.xian.length ? '　闲神 <b>' + dec.xian.join('、') + '</b>' : '') +
+       '　关系 <b>' + rec.rel + '</b></div>';
+
+  if(rec.mode === 'combo'){
+    h += '<div class="warnline">主用神 <b>' + dec.main + '</b> 与喜神 <b>' + dec.xi + '</b> 相克，不宜同器直配。' +
+         '以 <b>' + rec.C + '</b> 通关（' + dec.main + '生' + rec.C + '、' + rec.C + '生' + dec.xi + '），建议「主用神材质 + 通关材质」分器佩戴。</div>';
+    h += '<div class="rec best"><div class="rh"><div class="rt">主用神 ' + dec.main + ' 材质</div><div class="cnt">' + rec.combo.main.length + ' 款</div></div>';
+    h += rec.combo.main.length ? rec.combo.main.map(function(r){ return matHTML(r, dec); }).join('') : '<div class="empty">无匹配材质</div>';
+    h += '</div>';
+    h += '<div class="rec"><div class="rh"><div class="rt">通关五行 ' + rec.C + ' 材质</div><div class="cnt">' + rec.combo.tong.length + ' 款</div></div>';
+    h += rec.combo.tong.length ? rec.combo.tong.map(function(r){ return matHTML(r, dec); }).join('') : '<div class="empty">无匹配材质</div>';
+    h += '</div>';
+  } else {
+    var titles = {star: '★ 最优推荐', sub: '🔸 次优推荐', cand: '🔸 候选项'};
+    var descs = {
+      star: '本气、色气与用神体系完全贴合，余年气亦不犯忌。',
+      sub: '本体可取，但带一层余气或杂气，需留意佩戴节奏。',
+      cand: '勉可备用：或带余气／杂气，或取自「闲神」一路（不忌、但非首取），仅在无更好选择时择之。'
+    };
+    ['star', 'sub', 'cand'].forEach(function(k){
+      var rows = rec.groups[k];
+      var cls = k === 'star' ? 'rec best' : 'rec';
+      h += '<div class="' + cls + '"><div class="rh"><div class="rt">' + titles[k] + '</div><div class="cnt">' + rows.length + ' 款</div></div>';
+      h += rows.length ? rows.map(function(r){ return matHTML(r, dec); }).join('')
+                       : '<div class="empty">' + (k === 'star' ? '此路径下无首选级材质。' : '暂无。') + '</div>';
+      if(rows.length) h += '<div class="note" style="margin-top:6px">' + descs[k] + '</div>';
+      h += '</div>';
+    });
+    /* 闲神一路：单列，避免与真正的「候选项」混淆 */
+    var xr = rec.groups.xianAlt || [];
+    if(xr.length){
+      h += '<div class="rec"><div class="rh"><div class="rt">○ 闲神可用</div><div class="cnt">' + xr.length + ' 款</div></div>';
+      h += xr.map(function(r){ return matHTML(r, dec); }).join('');
+      h += '<div class="note" style="margin-top:6px">这些材质取自你的<b>闲神</b>（' +
+           dec.xian.join('、') + '）：不算忌神，且与主用神同向，故可作辅助佩戴；' +
+           '但优先级低于主用神与喜神，不与上列同戴时不必强求。</div>';
+      h += '</div>';
+    }
+  }
+
+  /* 避忌 */
+  var recNames = {};
+  ['star', 'sub', 'cand'].forEach(function(k){
+    (rec.groups[k] || []).forEach(function(r){ recNames[r.m.n] = 1; });
+  });
+  if(rec.combo){
+    rec.combo.main.forEach(function(r){ recNames[r.m.n] = 1; });
+    rec.combo.tong.forEach(function(r){ recNames[r.m.n] = 1; });
+  }
+  h += '<div class="rec" style="border-color:#f2d9d4;background:#fefcfb">';
+  h += '<div class="rh"><div class="rt" style="color:#c8452f">⚠️ 避忌</div><div class="cnt">忌神 ' + dec.ji + ' · 仇神 ' + dec.chou + '</div></div>';
+  h += '<div class="note">以下材质的主取用五行正落你的忌神／仇神，日常不宜作为主佩：</div>';
+  var jiList = avoid.filter(function(x){ return x.wx.indexOf(dec.ji) > -1; });
+  var chouList = avoid.filter(function(x){ return x.wx.indexOf(dec.ji) < 0 && x.wx.indexOf(dec.chou) > -1; });
+  var dualCount = 0;
+  function nameList(arr){
+    return arr.map(function(x){
+      var dual = !!recNames[x.m.n];
+      if(dual) dualCount++;
+      return esc(x.m.n) + (dual ? '<span class="badge" style="background:#fdf8ec;color:#b5791a;border-color:#f0e2bf">双属性</span>' : '');
+    }).join('、');
+  }
+  h += '<div style="margin-top:8px;font-size:13px;line-height:1.95">';
+  h += '<div><b>忌神 ' + dec.ji + ' 类：</b>' + (jiList.length ? nameList(jiList) : '—') + '</div>';
+  h += '<div><b>仇神 ' + dec.chou + ' 类：</b>' + (chouList.length ? nameList(chouList) : '—') + '</div>';
+  h += '</div>';
+  if(dualCount){
+    h += '<div class="warnline">标「双属性」者，气兼两行——被避的那一面正是其本气或余气，但另一面同时合你用神。' +
+         '此类材质若已在推荐栏出现，可依推荐栏取用，只是不宜单独、长期作纯主佩；建议与主用神之器分戴，或以通关之器间隔。</div>';
+  }
+  h += '<div class="dangerline">特殊提示：朱砂（火气燥烈，原局土旺者慎用）、红釉珐琅／烧蓝（含金气，喜火忌金者慎用）、白砗磲与各类土本气水晶（多带土之余气，喜金水而忌土者不宜）。</div>';
+  h += '</div>';
+  h += '</section>';
+  return h;
+}
+
+/* ---- 说明卡片 ---- */
+function renderNotes(dec, pct, pp){
+  var h = '<section class="card"><h2>五、说明与佩戴建议</h2>';
+  h += '<h3>原局五行力量</h3>';
+  var mx = Math.max.apply(null, WX5.map(function(w){ return pct[w]; })) || 1;
+  WX5.forEach(function(w){
+    var col = {木:'#3f8f5a', 火:'#c8452f', 土:'#c08a1e', 金:'#94803c', 水:'#2f6f9f'}[w];
+    h += '<div class="kv"><span class="k">' + w + '</span><span class="v">' +
+         '<div class="bar" style="margin:2px 0"><span style="width:' + (pct[w] / mx * 100) + '%;background:' + col + '"></span></div>' +
+         '<span style="font-size:12px;color:#8d867c">' + fx(pct[w]) + '%　（' + wxClass(pp.P.dayGan, w) + '）</span></span></div>';
+  });
+  h += '<div class="note">力量口径：天干各 1.0，地支按年 0.9／月 1.6／日 1.1／时 0.9 计权，藏干按本气中气余气分摊；三合三会成局者，该支藏干尽归化神。</div>';
+
+  h += '<h3>五行关系</h3>';
+  h += '<ul class="plain">';
+  h += '<li>相生：木→火→土→金→水→木</li>';
+  h += '<li>相克：木→土→水→火→金→木</li>';
+  h += '<li>通关：金木战取水、水火战取木、土木战取火、火金战取土</li>';
+  h += '<li>本命链条：主用神 <b>' + dec.main + '</b>，喜神 <b>' + dec.xi + '</b>（' + dec.rel + '），忌神 <b>' + dec.ji + '</b>，仇神 <b>' + dec.chou + '</b>' +
+       (dec.cong ? '　（从格口径：忌神取克所从之神者，仇神取生忌神者）' : '　（加权得分垫底与次低者）') + '</li>';
+  h += '</ul>';
+
+  h += '<h3>佩戴建议</h3>';
+  var tips = [];
+  if(dec.rel === '同气'){
+    tips.push('主用神与喜神同气，直接选「' + dec.main + '- ' + dec.main + ' ★」类材质为主佩即可，气最纯。');
+  } else if(dec.rel === '相生'){
+    tips.push('用神与喜神相生，优先选同时含「' + dec.main + '」与「' + dec.xi + '」的材质，一物两用，效力最稳。');
+  } else {
+    var C2 = (KE[dec.main] === dec.xi) ? SHENG[dec.main] : SHENG[dec.xi];
+    tips.push('用神与喜神相克，切勿把两者共嵌于同一件器物上相互消耗。以「' + C2 + '」通关（' +
+      (KE[dec.main] === dec.xi ? dec.main + '生' + C2 + '、' + C2 + '生' + dec.xi : dec.xi + '生' + C2 + '、' + C2 + '生' + dec.main) +
+      '），宜分器佩戴：主用神之器常态佩戴，通关之器可贴近或与主器同组。');
+  }
+  tips.push('避忌之物不必一概弃置：若为已有旧物，可置于家中' + dec.ji + '气方位收存，不贴身佩戴即可。');
+  tips.push('佩戴以低频长时为佳。紞炼后的新配饰，先连续佩七日适应，若期间心烦、睡眠异常，可暂歇三日再续。');
+  tips.push('同款材质不同产地对气机略有影响，本表按材质类属记，不细究产地。');
+  h += '<ul class="plain">' + tips.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+
+  h += '</section>';
+  return h;
+}
+
+/* ============ 14. 页面交互 ============ */
+function setStatus(t, err){
+  var el = document.getElementById('status');
+  el.textContent = t || '';
+  el.className = t ? (err ? 'err' : '') : '';
+}
+(function init(){
+  /* ---- 出生日期：年 / 月 / 日 三下拉，规范值写入隐藏的 #bdate ---- */
+  var byear = document.getElementById('byear');
+  var bmonth = document.getElementById('bmonth');
+  var bday = document.getElementById('bday');
+  var bdate = document.getElementById('bdate');
+  var YEAR_MIN = 1900, YEAR_MAX = new Date().getFullYear();
+
+  function pad2(n){ return ('0' + n).slice(-2); }
+  function daysInMonth(y, m){ return new Date(Date.UTC(y, m, 0)).getUTCDate(); }  // 用 UTC，避开时区/夏令时
+  function fillYearMonth(){
+    var i, o;
+    for(i = YEAR_MAX; i >= YEAR_MIN; i--){            // 年份倒序：近年在前，少滚动
+      o = document.createElement('option'); o.value = i; o.textContent = i + ' 年';
+      byear.appendChild(o);
+    }
+    for(i = 1; i <= 12; i++){
+      o = document.createElement('option'); o.value = i; o.textContent = i + ' 月';
+      bmonth.appendChild(o);
+    }
+  }
+  function fillDay(){
+    var y = +byear.value, m = +bmonth.value;
+    var keep = +bday.value || 1;
+    var n = daysInMonth(y, m);
+    bday.innerHTML = '';
+    for(var i = 1; i <= n; i++){
+      var o = document.createElement('option'); o.value = i; o.textContent = i + ' 日';
+      bday.appendChild(o);
+    }
+    bday.value = String(Math.min(keep, n));          // 2 月 29 日切到平年时自动收到 28
+  }
+  function syncBdate(){
+    bdate.value = byear.value + '-' + pad2(bmonth.value) + '-' + pad2(bday.value);
+    if(typeof toggleSect === 'function') toggleSect();   // 日期变了，晚子时选项可能随之出现／消失
+  }
+  function readBdate(){
+    var p = String(bdate.value || '').split('-');
+    if(p.length !== 3 || !p[0]) return;
+    byear.value = String(+p[0]);
+    bmonth.value = String(+p[1]);
+    fillDay();
+    bday.value = String(Math.min(+p[2], +bday.options.length));
+  }
+  fillYearMonth();
+  readBdate();                                        // 用 #bdate 的初值回填三个下拉
+  byear.addEventListener('change', function(){ fillDay(); syncBdate(); });
+  bmonth.addEventListener('change', function(){ fillDay(); syncBdate(); });
+  bday.addEventListener('change', syncBdate);
+
+  var provSel = document.getElementById('prov');
+  var citySel = document.getElementById('city');
+  var cityLabel = citySel.closest('.field').querySelector('label');
+  var lonInput = document.getElementById('lon');
+
+  Object.keys(REGIONS).forEach(function(p){
+    var o = document.createElement('option'); o.value = p; o.textContent = p; provSel.appendChild(o);
+  });
+  provSel.value = '广东省';
+
+  function fillCity(){
+    var list = REGIONS[provSel.value] || [];
+    citySel.innerHTML = '';
+    list.forEach(function(c){
+      var o = document.createElement('option');
+      o.value = c[0]; o.textContent = c[0]; o.setAttribute('data-lon', c[1]);
+      citySel.appendChild(o);
+    });
+    /* 二级标签由名单实际内容推断，避免新增行政区时标签与数据脱节 */
+    var allDist = list.length > 0 && list.every(function(c){ return /(区|县)$/.test(c[0]); });
+    cityLabel.textContent = allDist ? '区 / 县' : '市 / 州 / 地区';
+    syncLon();
+  }
+  function syncLon(){
+    if(!citySel.options.length) return;
+    var lon = parseFloat(citySel.options[citySel.selectedIndex].getAttribute('data-lon'));
+    if(!isNaN(lon)) lonInput.value = lon;
+    if(typeof toggleSect === 'function') toggleSect();   // 经度变了，真太阳时随之变
+  }
+  provSel.addEventListener('change', fillCity);
+  citySel.addEventListener('change', syncLon);
+  fillCity();
+
+  /* 分段按钮通用：点哪颗亮哪颗 */
+  function bindSeg(id){
+    var el = document.getElementById(id);
+    el.addEventListener('click', function(e){
+      var b = e.target.closest('button');
+      if(!b) return;
+      [].forEach.call(el.querySelectorAll('button'), function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+    });
+    return el;
+  }
+  var seg = bindSeg('sexSeg');
+  var sectSeg = bindSeg('sectSeg');
+
+  /* 晚子时选项：当【真太阳时】落在 23:00–23:59 时出现。
+     不按输入的北京时间判断 —— 日柱、时柱本就按真太阳时定，例如成都输入 00:10
+     （经度 104.07°，真太阳时 23:03）恰是晚子时，按输入时判断会漏掉这个选项。
+     注：index.html 用输入时判断；本工具用校正后判断，属有意的改进，四柱结果两者完全一致
+     （见 _dev/cmp-paipan.js 对拍，差异 0）。 */
+  var btimeEl = document.getElementById('btime');
+  var sectField = document.getElementById('sectField');
+  function localHourOf(){
+    var tp = String(btimeEl.value || '12:00').split(':').map(Number);
+    if(!bdate || !lonInput) return tp[0] || 0;
+    var dp = String(bdate.value || '').split('-').map(Number);
+    var lon = parseFloat(lonInput.value);
+    if(dp.length !== 3 || dp.some(function(n){ return !isFinite(n); })) return tp[0] || 0;
+    if(!isFinite(lon)) return tp[0] || 0;
+    var totalMin = (lon - 120) * 4 + equationOfTime(dp[0], dp[1], dp[2]);
+    var base = new Date(dp[0], dp[1] - 1, dp[2], tp[0] || 0, tp[1] || 0, 0);
+    return new Date(base.getTime() + Math.round(totalMin) * 60000).getHours();
+  }
+  function toggleSect(){
+    if(!btimeEl || !sectField) return;
+    sectField.style.display = (localHourOf() === 23) ? 'block' : 'none';
+  }
+  btimeEl.addEventListener('change', toggleSect);
+  btimeEl.addEventListener('input', toggleSect);
+  lonInput.addEventListener('change', toggleSect);
+  lonInput.addEventListener('input', toggleSect);
+  toggleSect();
+
+  var go = document.getElementById('go');
+  go.addEventListener('click', function(){
+    try{
+      var sex = parseInt(seg.querySelector('button.on').getAttribute('data-v'), 10);
+      var sect = parseInt(sectSeg.querySelector('button.on').getAttribute('data-v'), 10) || 2;
+      var dv = document.getElementById('bdate').value;
+      var tv = document.getElementById('btime').value || '12:00';
+      if(!dv){ setStatus('请先选择出生日期', true); return; }
+      var dp = dv.split('-').map(Number), tp = tv.split(':').map(Number);
+      if(dp.length !== 3 || dp.some(function(n){ return !isFinite(n); })){ setStatus('出生日期不完整', true); return; }
+      if(dp[0] < 1900 || dp[0] > YEAR_MAX){ setStatus('出生年份请取 1900 – ' + YEAR_MAX + ' 之间', true); return; }
+      if(tp.length < 2 || !isFinite(tp[0]) || !isFinite(tp[1])){ setStatus('出生时间有误', true); return; }
+      var lon = parseFloat(lonInput.value);
+      if(isNaN(lon)){ setStatus('经度填写有误', true); return; }
+
+      var pp = paipan({y:dp[0], mo:dp[1], d:dp[2], h:tp[0], mi:tp[1], lon:lon, sex:sex, sect:sect});
+      var P = pp.P;
+      var pw = wuxingSummary(P, P.ju);
+      var ws = calcWangShuai(P, P.ju);
+      var gj = calcGeJu(P, ws);
+      var th = calcTiaoHou(P, ws, pw.pct);
+      var by = calcBingYao(P, ws, pw.pct);
+      var tg = calcTongGuan(pw.pct);
+      var dec = decide(P, ws, gj, th, by, tg, pw.pct);
+      var rec = recommend(dec);
+      var avoid = buildAvoid(dec);
+
+      document.getElementById('results').innerHTML =
+        renderBaZi(pp) + renderDiag(P, ws, gj, th, dec, tg, pw.pct) +
+        renderVerdict(dec) + renderRec(dec, rec, avoid) +
+        renderNotes(dec, pw.pct, pp);
+
+      setStatus('');
+      var r = document.getElementById('results');
+      window.scrollTo({top: r.offsetTop - 10, behavior: 'smooth'});
+    }catch(err){
+      setStatus('计算出错：' + err.message, true);
+      if(window.console) console.error(err);
+    }
+  });
+
+  go.disabled = true;
+  loadCore().then(function(){
+    go.disabled = false;
+    setStatus('排盘库已就绪，点击上方按钮开始查询');
+  }).catch(function(){
+    setStatus('排盘库（lunar-javascript）加载失败，请检查网络后刷新重试', true);
+  });
+})();
+</script>
+</body>
+</html>
